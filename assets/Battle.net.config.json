@@ -1,0 +1,21 @@
+{
+  "Client": {
+    "GameLaunchWindowBehavior": "2",
+    "GameSearch": {
+      "BackgroundSearch": "true"
+    },
+    "HardwareAcceleration": "false",
+    "Install": {
+      "DownloadLimitNextPatchInBps": "0"
+    },
+    "Sound": {
+      "Enabled": "false"
+    },
+    "Streaming": {
+      "StreamingEnabled": "false"
+    }
+  },
+  "w3": {
+    "AdditionalLaunchArguments": "-windowmode fullscreen"
+  }
+}

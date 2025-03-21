@@ -1,10 +1,11 @@
-description: 'Installs Battle.net + W3Champions + Webview2. Note: you need to run Battle.Net, install and then run Warcraft III before W3Champions will work.'
-game_slug: w3champion
-gogslug: ''
-humblestoreid: ''
-installer_slug: w3champion
-name: 'W3Champions'
-notes: "**CONFIGURE AND INSTALL THE DEPENDENCIES FIRST**\r\nInstructions for Vulkan\
+description: "Installs Battle.net + W3Champions + Webview2. Note: you need to run Battle.Net, install and then run Warcraft III before W3Champions will work."
+game_slug: w3champions
+gogslug: ""
+humblestoreid: ""
+installer_slug: w3champions
+name: "W3Champions"
+notes:
+  "**CONFIGURE AND INSTALL THE DEPENDENCIES FIRST**\r\nInstructions for Vulkan\
   \ support: https://github.com/lutris/lutris/wiki/Installing-drivers\r\n\r\nInstructions\
   \ for proper functionality of Battle.Net (+ common problems) https://github.com/lutris/lutris/wiki/Game:-Blizzard-App\r\
   \n\r\nIf the game is laggy you can switch between different windowmodes from the\
@@ -14,113 +15,113 @@ notes: "**CONFIGURE AND INSTALL THE DEPENDENCIES FIRST**\r\nInstructions for Vul
 runner: wine
 script:
   files:
-  - setup: 
-      filename: Battle.net-Setup.exe
-      url: https://www.battle.net/download/getInstallerForGame?os=win&version=LIVE&gameProgram=BATTLENET_APP
-  - w3champions: 
-      filename: W3Champions_1.5.27_x64_en-US.msi
-      url: https://update-service.w3champions.com/api/launcher-e
-  - webview2: 
-      filename: MicrosoftEdgeWebview2RuntimeInstallerX64.exe
-      url: https://go.microsoft.com/fwlink/?linkid=2124701
+    - setup:
+        filename: Battle.net-Setup.exe
+        url: https://www.battle.net/download/getInstallerForGame?os=win&version=LIVE&gameProgram=BATTLENET_APP
+    - w3champions:
+        filename: W3Champions_1.5.27_x64_en-US.msi
+        url: https://update-service.w3champions.com/api/launcher-e
+    - webview2:
+        filename: MicrosoftEdgeWebview2RuntimeInstallerX64.exe
+        url: https://go.microsoft.com/fwlink/?linkid=2124701
   game:
     arch: win64
     exe: drive_c/Program Files/W3Champions/W3Champions.exe
     prefix: $GAMEDIR
   installer:
-  - task:
-      arch: win64
-      description: Creating 64bit Wine prefix.
-      name: create_prefix
-      prefix: $GAMEDIR
-  - task:
-      app: arial
-      arch: win64
-      description: Installing Arial font...
-      name: winetricks
-      prefix: $GAMEDIR
-      silent: true
-  - task:
-      app: tahoma
-      arch: win64
-      description: Installing Tahoma font
-      name: winetricks
-      prefix: $GAMEDIR
-  - task:
-      arch: win64
-      description: Setting Windows 10 mode for Wine
-      key: Version
-      name: set_regedit
-      path: HKEY_CURRENT_USER\Software\Wine
-      prefix: $GAMEDIR
-      value: win10
-  - write_json:
-      data:
-        Client:
-          GameLaunchWindowBehavior: '2'
-          GameSearch:
-            BackgroundSearch: 'true'
-          HardwareAcceleration: 'false'
-          Install:
-            DownloadLimitNextPatchInBps: '0'
-          Sound:
-            Enabled: 'false'
-          Streaming:
-            StreamingEnabled: 'false'
-        w3:
-          AdditionalLaunchArguments: -windowmode fullscreen
-      description: Writing a Battle.Net config file
-      file: $GAMEDIR/drive_c/users/$USER/AppData/Roaming/Battle.net/Battle.net.config
-  - task:
-      arch: win64
-      description: 'Wine Staging: Enabling DXVA2'
-      key: backend
-      name: set_regedit
-      path: HKEY_CURRENT_USER\Software\Wine\DXVA2
-      prefix: $GAMEDIR
-      value: va
-  - merge:
-      dst: $GAMEDIR/drive_c/
-      src: setup
-  - execute:
-      command: WINEESYNC=1 WINEPREFIX="$GAMEDIR" "$WINEBIN" "$GAMEDIR/drive_c/Battle.net-Setup.exe"
-      description: 'Installing Blizzard App
+    - task:
+        arch: win64
+        description: Creating 64bit Wine prefix.
+        name: create_prefix
+        prefix: $GAMEDIR
+    - task:
+        app: arial
+        arch: win64
+        description: Installing Arial font...
+        name: winetricks
+        prefix: $GAMEDIR
+        silent: true
+    - task:
+        app: tahoma
+        arch: win64
+        description: Installing Tahoma font
+        name: winetricks
+        prefix: $GAMEDIR
+    - task:
+        arch: win64
+        description: Setting Windows 10 mode for Wine
+        key: Version
+        name: set_regedit
+        path: HKEY_CURRENT_USER\Software\Wine
+        prefix: $GAMEDIR
+        value: win10
+    - write_json:
+        data:
+          Client:
+            GameLaunchWindowBehavior: "2"
+            GameSearch:
+              BackgroundSearch: "true"
+            HardwareAcceleration: "false"
+            Install:
+              DownloadLimitNextPatchInBps: "0"
+            Sound:
+              Enabled: "false"
+            Streaming:
+              StreamingEnabled: "false"
+          w3:
+            AdditionalLaunchArguments: -windowmode fullscreen
+        description: Writing a Battle.Net config file
+        file: $GAMEDIR/drive_c/users/$USER/AppData/Roaming/Battle.net/Battle.net.config
+    - task:
+        arch: win64
+        description: "Wine Staging: Enabling DXVA2"
+        key: backend
+        name: set_regedit
+        path: HKEY_CURRENT_USER\Software\Wine\DXVA2
+        prefix: $GAMEDIR
+        value: va
+    - merge:
+        dst: $GAMEDIR/drive_c/
+        src: setup
+    - execute:
+        command: WINEESYNC=1 WINEPREFIX="$GAMEDIR" "$WINEBIN" "$GAMEDIR/drive_c/Battle.net-Setup.exe"
+        description: "Installing Blizzard App
 
-        ------------------------------
+          ------------------------------
 
-        Login to battle.net. Install and run Warcraft III once before proceeding.'
-  - task:
-      name: winekill
-      prefix: $GAMEDIR
-  - task:
-      arch: win64
-      description: 'Installing w3champions...
+          Login to battle.net. Install and run Warcraft III once before proceeding."
+    - task:
+        name: winekill
+        prefix: $GAMEDIR
+    - task:
+        arch: win64
+        description: "Installing w3champions...
 
-        ------------------------------
+          ------------------------------
 
-        Do not run w3champions at the end of setup. '
-      executable: w3champions
-      name: wineexec
-  - task:
-      name: winekill
-      prefix: $GAMEDIR
-  - task:
-      arch: win64
-      description: 'Installing webview2...
-        ---------------------------------
-        Hang tight...'
-      executable: webview2
-      name: wineexec
-      exclude_processes: MicrosoftEdgeUpdate.exe
-  - task:
-      key: Version
-      name: set_regedit
-      path: HKEY_CURRENT_USER\Software\Wine\AppDefaults\msedgewebview2.exe
-      prefix: $GAMEDIR
-      value: win7
-  - task:
-      name: winekill
-      prefix: $GAMEDIR
+          Do not run w3champions at the end of setup. "
+        executable: w3champions
+        name: wineexec
+    - task:
+        name: winekill
+        prefix: $GAMEDIR
+    - task:
+        arch: win64
+        description: "Installing webview2...
+          ---------------------------------
+          Hang tight..."
+        executable: webview2
+        name: wineexec
+        exclude_processes: MicrosoftEdgeUpdate.exe
+    - task:
+        key: Version
+        name: set_regedit
+        path: HKEY_CURRENT_USER\Software\Wine\AppDefaults\msedgewebview2.exe
+        prefix: $GAMEDIR
+        value: win7
+    - task:
+        name: winekill
+        prefix: $GAMEDIR
   system:
     env:
       DXVK_STATE_CACHE_PATH: $GAMEDIR
