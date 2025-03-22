@@ -89,6 +89,10 @@
 
       export WEBVIEW2_URL="https://go.microsoft.com/fwlink/?linkid=2124703"
       export WEBVIEW2_SETUP_EXE="$DOWNLOADS/MicrosoftEdgeWebview2Setup.exe"
+
+      export BONJOUR_URL="https://cdn.discordapp.com/attachments/797076711023050753/1347196008710279209/Bonjour64.msi?ex=67df60ce&is=67de0f4e&hm=3a3bf8c2cd770e6a795460004ebfafee0c59d04b03435decbfd9cf55b050fed7&"
+      export BONJOUR_MSI="$DOWNLOADS/Bonjour64.msi"
+      export BONJOUR_EXE="$PROGRAM_FILES/Bonjour/mDNSResponder.exe"
     '';
     w3champions = pkgs.writeShellApplication {
       name = "w3champions";
@@ -159,28 +163,46 @@
           echo "Installing d3dx11_42.dll for WebView2..."
           winetricks -q --force d3dx11_42 || true
 
-          echo "Installing ole32.dll for WebView2..."
-          winetricks -q --force ole32 || true
-
           echo "Setting 'msedgewebview2.exe' to Windows 7"
           wine "$WINEPREFIX/drive_c/windows/regedit.exe" /S "${self}/registry/msedgewebview2.exe.reg"
 
           echo "Successfully installed WebView2 runtime"
 
+          echo "Installing Bonjour..."
+
+          if [ ! -f "$BONJOUR_MSI" ]; then
+            echo "Downloading Bonjour installer..."
+            curl -L "$BONJOUR_URL" -o "$BONJOUR_MSI"
+          else
+            echo "Bonjour installer already downloaded."
+          fi
+
+          wine "$BONJOUR_MSI"
+
+          if [ ! -f "$BONJOUR_EXE" ]; then
+            echo "Failed installing Bonjour"
+            exit 1
+          fi
+
+          echo "Running Bonjour..."
+
+          wine net stop 'Bonjour Service'
+          wine net start 'Bonjour Service'
+
           echo "Installing Battle.net..."
 
           if [ ! -f "$BNET_SETUP_EXE" ]; then
-            echo "Downloading Battle.net Launcher..."
+            echo "Downloading Battle.net launcher..."
             curl -L "$BATTLENET_URL" -o "$BNET_SETUP_EXE"
           else
-            echo "Battle.net Launcher already downloaded."
+            echo "Battle.net launcher already downloaded."
           fi
 
           echo "Writing a Battle.net config file"
           mkdir -p "$BNET_CONFIG_HOME"
           cat ${self}/assets/Battle.net.config.json > "$BNET_CONFIG"
 
-          echo "Running Battle.net Setup..."
+          echo "Running Battle.net setup..."
           wine "$BNET_SETUP_EXE"
 
           if [[ ! -f "$BNET_EXE" ]]; then
@@ -196,13 +218,13 @@
           echo "Installing W3Champions..."
 
           if [ ! -f "$W3C_SETUP_EXE" ]; then
-              echo "Downloading W3Champions Launcher..."
+              echo "Downloading W3Champions launcher..."
               curl -L "$W3C_URL" -o "$W3C_SETUP_EXE"
           else
-              echo "W3Champions Launcher already downloaded."
+              echo "W3Champions launcher already downloaded."
           fi
 
-          echo "Running W3Champions Setup..."
+          echo "Running W3Champions setup..."
           echo "Do not yet launch W3Champions after the installer finishes... a final step will still be needed."
           wine "$W3C_SETUP_EXE" || exit 1
 
@@ -210,10 +232,10 @@
 
           wineserver -k
 
-          echo "Now, to finish off, installing vcrun2017 is needed using winetricks"
+          echo "Now, to finish off, installing vcrun2017 and ole32 is needed using winetricks"
           echo "For some reason, this will hang endlessly when ran in a script, but it will work when running manually in a terminal"
           echo "Run the following command in the terminal"
-          echo "winetricks -q --force vcrun2017"
+          echo "winetricks -q --force vcrun2017 ole32"
           echo "Any errors during this installation regarding winemenubuilder can be ignored."
         '';
     };
