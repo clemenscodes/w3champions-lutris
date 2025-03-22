@@ -31,110 +31,12 @@
     system = "x86_64-linux";
     pkgs = import nixpkgs {
       inherit system;
-      overlays = let
-        mkWinePkgs = {
-          final,
-          prev,
-          version,
-          src,
-          ...
-        }: {
-          "wine-bleeding-${version}" = prev.winePackages.unstableFull.overrideAttrs (oldAttrs: rec {
-            inherit version src;
-            name = "wine-bleeding-${version}";
-          });
-          "wine-bleeding-winetricks-${version}" = prev.stdenv.mkDerivation {
-            name = "wine-bleeding-winetricks-${version}";
-            phases = "installPhase";
-            installPhase = ''
-              mkdir -p $out/bin
-              ln -s ${final."wine-bleeding-${version}"}/bin/wine $out/bin/wine64
-            '';
-          };
-          "wine64-bleeding-${version}" = prev.wine64Packages.unstableFull.overrideAttrs (oldAttrs: rec {
-            inherit version src;
-            name = "wine64-bleeding-${version}";
-          });
-          "wine64-bleeding-winetricks-${version}" = prev.stdenv.mkDerivation {
-            name = "wine64-bleeding-winetricks-${version}";
-            phases = "installPhase";
-            installPhase = ''
-              mkdir -p $out/bin
-              ln -s ${final."wine64-bleeding-${version}"}/bin/wine $out/bin/wine64
-            '';
-          };
-          "wine-wow-bleeding-${version}" = prev.wineWowPackages.unstableFull.overrideAttrs (oldAttrs: rec {
-            inherit version src;
-            name = "wine-wow-bleeding-${version}";
-          });
-          "wine-wow-bleeding-winetricks-${version}" = prev.stdenv.mkDerivation {
-            name = "wine-wow-bleeding-winetricks-${version}";
-            phases = "installPhase";
-            installPhase = ''
-              mkdir -p $out/bin
-              ln -s ${final."wine-wow-bleeding-${version}"}/bin/wine $out/bin/wine64
-            '';
-          };
-          "wine-wow64-bleeding-${version}" = prev.wineWow64Packages.unstableFull.overrideAttrs (oldAttrs: rec {
-            inherit version src;
-            name = "wine-wow64-bleeding-${version}";
-          });
-          "wine-wow64-bleeding-winetricks-${version}" = prev.stdenv.mkDerivation {
-            name = "wine-wow64-bleeding-winetricks-${version}";
-            phases = "installPhase";
-            installPhase = ''
-              mkdir -p $out/bin
-              ln -s ${final."wine-wow64-bleeding-${version}"}/bin/wine $out/bin/wine64
-            '';
-          };
-        };
-      in [
-        (
-          final: prev: let
-            version = "10.3";
-            src = prev.fetchurl rec {
-              inherit version;
-              url = "https://dl.winehq.org/wine/source/10.x/wine-${version}.tar.xz";
-              hash = "sha256-3j2I/wBWuC/9/KhC8RGVkuSRT0jE6gI3aOBBnDZGfD4=";
-            };
-          in
-            mkWinePkgs {inherit final prev version src;}
-        )
-        (
-          final: prev: {
-            lutris = prev.lutris.override {
-              extraPkgs = pkgs: lutrisPkgs;
-              extraLibraries = pkgs: lutrisPkgs;
-              steamSupport = false;
-            };
-            wine-ge = inputs.nix-gaming.packages.${system}.wine-ge;
-            umu = inputs.umu.packages.${system}.default.override {
-              extraPkgs = pkgs: [];
-              extraLibraries = pkgs: [];
-              withMultiArch = true;
-              withTruststore = true;
-              withDeltaUpdates = true;
-            };
-          }
-        )
-        (inputs.chaotic.overlays.default)
-      ];
+      overlays = [inputs.chaotic.overlays.default];
     };
-    lutrisPkgs = commonPkgs;
     commonPkgs = [
-      # pkgs.winetricks
-      # pkgs.proton-ge-custom
-      # pkgs.python3
-      # pkgs.wine-ge
-      # pkgs.wine
-      # pkgs.wine64
-      # pkgs."wine-wow-bleeding-10.3"
-      # pkgs."wine-wow-bleeding-winetricks-10.3"
-      # pkgs."wine-wow64-bleeding-10.3"
-      # pkgs."wine-wow64-bleeding-winetricks-10.3"
-      # pkgs.wineWowPackages.unstableFull
-      # pkgs.wineWow64Packages.unstableFull
-      # pkgs.wineWowPackages.waylandFull
+      pkgs.wineWowPackages.stagingFull
+      pkgs.wineWow64Packages.stagingFull
+      pkgs.winetricks
       pkgs.gamescope
       pkgs.mangohud
       pkgs.curl
@@ -143,81 +45,30 @@
       pkgs.gnutls
       pkgs.zenity
       pkgs.libsForQt5.kdialog
-
-      # pkgs.libdrm_git
-      # pkgs.libdrm32_git
-      # pkgs.vulkanPackages_latest.gfxreconstruct
-      # pkgs.vulkanPackages_latest.glslang
-      # pkgs.vulkanPackages_latest.spirv-cross
-      # pkgs.vulkanPackages_latest.spirv-headers
-      # pkgs.vulkanPackages_latest.spirv-tools
-      # pkgs.vulkanPackages_latest.vulkan-extension-layer
-      # pkgs.vulkanPackages_latest.vulkan-headers
-      # pkgs.vulkanPackages_latest.vulkan-loader
+      pkgs.protobuf
+      pkgs.python313Packages.protobuf
       pkgs.vulkanPackages_latest.vulkan-tools
-      # pkgs.vulkanPackages_latest.vulkan-tools-lunarg BROKEN when I compiled this on 21.03.2025
-      # pkgs.vulkanPackages_latest.vulkan-utility-libraries
-      # pkgs.vulkanPackages_latest.vulkan-validation-layers
-      # pkgs.vulkanPackages_latest.vulkan-volk
-      # pkgs.latencyflex-vulkan
-      # pkgs.protobuf
-      # pkgs.python313Packages.protobuf
-      # pkgs.clinfo
-      # pkgs.glxinfo
-      # pkgs.glmark2
-      # pkgs.libva-utils
-      # pkgs.vulkan-tools
-      # pkgs.dxvk
-      # pkgs.vkd3d-proton
-      # pkgs.rocmPackages.rocminfo
-      # pkgs.rocmPackages.clr
-      # pkgs.rocmPackages.clr.icd
-      # pkgs.rocmPackages.rocm-smi
-      # pkgs.rocmPackages.rocm-runtime
-      # pkgs.amdvlk
-      # pkgs.libva
-      # pkgs.mesa
-      # pkgs.driversi686Linux.amdvlk
-      # pkgs.driversi686Linux.mesa
+      pkgs.dxvk
+      pkgs.vkd3d
+      pkgs.vkd3d-proton
+      pkgs.libva
       pkgs.mesa_git
       pkgs.mesa32_git
-      # pkgs.mesa_git.opencl
-      # pkgs.intel-media-driver
-      # pkgs.vaapiIntel
-      # pkgs.rocmPackages.clr
-      # pkgs.rocmPackages.clr.icd
-      # pkgs.rocmPackages.rocm-runtime
-      # pkgs.pkgsi686Linux.mesa32_git.opencl
-      # pkgs.pkgsi686Linux.intel-media-driver
-      # pkgs.pkgsi686Linux.vaapiIntel
     ];
     environment = ''
-      # ln -sf "$(which wine)" ./wine64
-      # PATH="$(pwd):$PATH"
-      # export VK_DRIVER_FILES="/run/opengl-driver/share/vulkan/icd.d/radeon_icd.x86_64.json:/run/opengl-driver-32/share/vulkan/icd.d/radeon_icd.i686.json"
-      # export VK_ICD_FILENAMES="/run/opengl-driver/share/vulkan/icd.d/radeon_icd.x86_64.json:/run/opengl-driver-32/share/vulkan/icd.d/radeon_icd.686.json"
-      # export VK_DRIVER_FILES="/run/opengl-driver/share/vulkan/icd.d/amd_icd64.json:/run/opengl-driver-32/share/vulkan/icd.d/amd_icd32.json"
-      # export VK_ICD_FILENAMES="/run/opengl-driver/share/vulkan/icd.d/amd_icd64.json:/run/opengl-driver-32/share/vulkan/icd.d/amd_icd32.json"
-      # export LD_LIBRARY_PATH="/run/opengl-driver/lib:/run/opengl-driver-32/lib:${pkgs.mesa_git}/lib:${pkgs.mesa32_git}/lib:${pkgs.proton-ge-custom}/bin/files/lib:${pkgs.proton-ge-custom}/bin/files/lib64"
-      # export STEAM_EXTRA_COMPAT_TOOLS_PATH="${pkgs.proton-ge-custom}/bin:$STEAM_EXTRA_COMPAT_TOOLS_PATH"
+      ln -sf "$(which wine)" ./wine64
+      PATH="$(pwd):$PATH"
+
+      export VK_DRIVER_FILES="/run/opengl-driver/share/vulkan/icd.d/radeon_icd.x86_64.json:/run/opengl-driver-32/share/vulkan/icd.d/radeon_icd.i686.json"
+      export VK_ICD_FILENAMES="/run/opengl-driver/share/vulkan/icd.d/radeon_icd.x86_64.json:/run/opengl-driver-32/share/vulkan/icd.d/radeon_icd.686.json"
       export STEAM_COMPAT_CLIENT_INSTALL_PATH="$HOME/.local/share/Steam"
       export WINEPATH="$STEAM_COMPAT_CLIENT_INSTALL_PATH/steamapps/compatdata"
       export WINEPREFIX="$WINEPATH/w3champions"
-      # export WINE_SIMULATE_WRITECOPY=1
-      # export STEAM_COMPAT_DATA_PATH="$WINEPREFIX"
-      # export WINEDEBUG=+vulkan
+      export WINE_SIMULATE_WRITECOPY=1
+      export STEAM_COMPAT_DATA_PATH="$WINEPREFIX"
+      export WINEDEBUG=+vulkan
       export WINEARCH=win64
-      # export WINEESYNC=1
-      # export PROTON_LOG=1
-      # export PROTON_NO_FSYNC=1
-      export PROTON_VERB=runinprefix
-      # export LUTRIS_RUNTIME=0
-      export GAMEID=umu-default
-      # export DXVK_STATE_CACHE_PATH="$WINEPREFIX"
-      # export STAGING_SHARED_MEMORY=1
-      # export __GL_SHADER_DISK_CACHE=1
-      # export __GL_SHADER_DISK_CACHE_PATH="$WINEPREFIX"
-      # export PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=python
+
       export DOWNLOADS="$WINEPREFIX/drive_c/users/$USER/Downloads"
       export PROGRAM_FILES="$WINEPREFIX/drive_c/Program Files"
       export PROGRAM_FILES86="$WINEPREFIX/drive_c/Program Files (x86)"
@@ -241,7 +92,7 @@
     '';
     w3champions = pkgs.writeShellApplication {
       name = "w3champions";
-      runtimeInputs = [pkgs.umu pkgs.lutris pkgs.curl] ++ lutrisPkgs;
+      runtimeInputs = commonPkgs;
       text =
         environment
         + ''
@@ -251,55 +102,119 @@
           else
             echo "Wine prefix already exists, skipping initialization."
           fi
+
           echo "Installing Arial font..."
-          umu-run winetricks -q --force arial || true
+          winetricks -q --force arial || true
+
           echo "Installing Tahoma font..."
-          umu-run winetricks -q tahoma || true
+          winetricks -q tahoma || true
+
+          echo "Installing corefonts..."
+          winetricks -q corefonts || true
+
           echo "Setting Windows 10 mode for wine"
-          umu-run "$WINEPREFIX/drive_c/windows/regedit.exe" /S ${self}/registry/wine.reg
+          wine "$WINEPREFIX/drive_c/windows/regedit.exe" /S "${self}/registry/wine.reg"
+
           echo "Enabling DXVA2 for wine"
-          umu-run "$WINEPREFIX/drive_c/windows/regedit.exe" /S ${self}/registry/dxva2.reg
+          wine "$WINEPREFIX/drive_c/windows/regedit.exe" /S "${self}/registry/dxva2.reg"
+
           mkdir -p "$DOWNLOADS"
-          if [[ ! -d "$WINEPREFIX" || ! -f "$BNET_EXE" ]]; then
-            echo "Installing Battle.net..."
-            if [ ! -f "$BNET_SETUP_EXE" ]; then
-              echo "Downloading Battle.net Launcher..."
-              curl -L "$BATTLENET_URL" -o "$BNET_SETUP_EXE"
-            else
-              echo "Battle.net Launcher already downloaded."
-            fi
-            echo "Writing a Battle.net config file"
-            mkdir -p "$BNET_CONFIG_HOME"
-            cat ${self}/assets/Battle.net.config.json > "$BNET_CONFIG"
-            umu-run "$BNET_SETUP_EXE" || exit 1
-            echo "Successfully installed Battle.net"
+
+          echo "Downloading WebView2 runtime installer..."
+          curl -L "$WEBVIEW2_URL" -o "$WEBVIEW2_SETUP_EXE"
+
+          echo "Installing the WebView2 runtime..."
+          wine "$WEBVIEW2_SETUP_EXE" || exit 1
+
+          echo "Installing d3dx10.dll for WebView2..."
+          winetricks -q --force d3dx10 || true
+
+          echo "Installing d3dx9.dll for WebView2..."
+          winetricks -q --force d3dx9 || true
+
+          echo "Installing dxvk.dll for WebView2..."
+          winetricks -q --force dxvk || true
+
+          echo "Installing vkd3d.dll for WebView2..."
+          winetricks -q --force vkd3d || true
+
+          echo "Installing d3dcompiler_42.dll for WebView2..."
+          winetricks -q --force d3dcompiler_42 || true
+
+          echo "Installing d3dcompiler_43.dll for WebView2..."
+          winetricks -q --force d3dcompiler_43 || true
+
+          echo "Installing d3dcompiler_46.dll for WebView2..."
+          winetricks -q --force d3dcompiler_46 || true
+
+          echo "Installing d3dcompiler_47.dll for WebView2..."
+          winetricks -q --force d3dcompiler_47 || true
+
+          echo "Installing d3drm.dll for WebView2..."
+          winetricks -q --force d3drm || true
+
+          echo "Installing d3dx10_43.dll for WebView2..."
+          winetricks -q --force d3dx10_43 || true
+
+          echo "Installing d3dx11_42.dll for WebView2..."
+          winetricks -q --force d3dx11_42 || true
+
+          echo "Installing ole32.dll for WebView2..."
+          winetricks -q --force ole32 || true
+
+          echo "Setting 'msedgewebview2.exe' to Windows 7"
+          wine "$WINEPREFIX/drive_c/windows/regedit.exe" /S "${self}/registry/msedgewebview2.exe.reg"
+
+          echo "Successfully installed WebView2 runtime"
+
+          echo "Installing Battle.net..."
+
+          if [ ! -f "$BNET_SETUP_EXE" ]; then
+            echo "Downloading Battle.net Launcher..."
+            curl -L "$BATTLENET_URL" -o "$BNET_SETUP_EXE"
+          else
+            echo "Battle.net Launcher already downloaded."
           fi
-          if [[ ! -d "$WINEPREFIX" || ! -f "$WEBVIEW2_SETUP_EXE" ]]; then
-            echo "Downloading WebView2 runtime installer..."
-            curl -L "$WEBVIEW2_URL" -o "$WEBVIEW2_SETUP_EXE"
-            echo "Installing corefonts for WebView2..."
-            umu-run winetricks -q corefonts || true
-            echo "Installing ole32.dll for WebView2..."
-            umu-run winetricks -q ole32 || true
-            echo "Installing vcrun2017 for WebView2..."
-            umu-run winetricks -q vcrun2017 || true
-            echo "Installing the WebView2 runtime..."
-            umu-run "$WEBVIEW2_SETUP_EXE" || exit 1
-            echo "Setting msedgewebvie2.exe to Windows 7"
-            umu-run "$WINEPREFIX/drive_c/windows/regedit.exe" /S ${self}/registry/msedgewebview2.exe.reg
-            echo "Successfully installed WebView2 runtime"
+
+          echo "Writing a Battle.net config file"
+          mkdir -p "$BNET_CONFIG_HOME"
+          cat ${self}/assets/Battle.net.config.json > "$BNET_CONFIG"
+
+          echo "Running Battle.net Setup..."
+          wine "$BNET_SETUP_EXE"
+
+          if [[ ! -f "$BNET_EXE" ]]; then
+            echo "Failed to install Battle.net"
+            exit 1
           fi
-          if [[ ! -d "$WINEPREFIX" || ! -f "$W3C_EXE" ]]; then
-            echo "Installing W3Champions..."
-            if [ ! -f "$W3C_SETUP_EXE" ]; then
-                echo "Downloading W3Champions Launcher..."
-                curl -L "$W3C_URL" -o "$W3C_SETUP_EXE"
-            else
-                echo "W3Champions Launcher already downloaded."
-            fi
-            umu-run "$W3C_SETUP_EXE" || exit 1
-            echo "Successfully installed W3Champions"
+
+          echo "Successfully installed Battle.net"
+
+          echo "Setting 'Battle.net.exe' to Windows 7"
+          wine "$WINEPREFIX/drive_c/windows/regedit.exe" /S "${self}/registry/Battle.net.exe.reg"
+
+          echo "Installing W3Champions..."
+
+          if [ ! -f "$W3C_SETUP_EXE" ]; then
+              echo "Downloading W3Champions Launcher..."
+              curl -L "$W3C_URL" -o "$W3C_SETUP_EXE"
+          else
+              echo "W3Champions Launcher already downloaded."
           fi
+
+          echo "Running W3Champions Setup..."
+          echo "Do not yet launch W3Champions after the installer finishes... a final step will still be needed."
+          wine "$W3C_SETUP_EXE" || exit 1
+
+          echo "Successfully installed W3Champions"
+
+          wineserver -k
+
+          echo "Now, to finish off, installing vcrun2017 is needed using winetricks"
+          echo "For some reason, this will hang endlessly when ran in a script, but it will work when running manually in a terminal"
+          echo "Run the following command in the terminal"
+          echo "winetricks -q --force vcrun2017"
+          echo "Any errors during this installation regarding winemenubuilder can be ignored."
         '';
     };
   in {
@@ -312,16 +227,7 @@
     devShells = {
       ${system} = {
         default = pkgs.mkShell {
-          buildInputs =
-            [
-              pkgs.curl
-              pkgs.winetricks
-              pkgs.umu
-              pkgs.lutris
-              # pkgs.wineWowPackages.unstableFull
-            ]
-            ++ commonPkgs
-            ++ lutrisPkgs;
+          buildInputs = [w3champions] ++ commonPkgs;
           shellHook =
             environment
             + ''
