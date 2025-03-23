@@ -12,31 +12,21 @@ pkgs.writeShellApplication {
       wine-wow64-staging-10_4
       wine-wow64-staging-winetricks-10_4
     ])
-    ++ (with pkgs; [curl]);
+    ++ (with pkgs; [
+      curl
+      dxvk
+      vkd3d
+      mesa
+      driversi686Linux.mesa
+    ]);
   text =
     environment
     + ''
-      rm -rf "$WINEPREFIX"
-
-      if [ ! -d "$WINEPREFIX" ]; then
-        echo "Initializing Wine prefix..."
-        mkdir -p "$WINEPREFIX"
-      else
-        echo "Wine prefix already exists, skipping initialization."
-      fi
-
-      echo "Setting Windows 7 mode for wine"
-      wine "$WINEPREFIX/drive_c/windows/regedit.exe" /S "${self}/registry/wine.reg"
-
-      echo "Enabling DXVA2 for wine"
-      wine "$WINEPREFIX/drive_c/windows/regedit.exe" /S "${self}/registry/dxva2.reg"
-
-      mkdir -p "$DOWNLOADS"
-
       echo "Installing W3Champions..."
 
       if [ ! -f "$W3C_SETUP_EXE" ]; then
           echo "Downloading W3Champions launcher..."
+          mkdir -p "$DOWNLOADS"
           curl -L "$W3C_URL" -o "$W3C_SETUP_EXE"
       else
           echo "W3Champions launcher already downloaded."

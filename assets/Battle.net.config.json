@@ -1,21 +1,22 @@
 {
   "Client": {
-    "GameLaunchWindowBehavior": "2",
     "GameSearch": {
       "BackgroundSearch": "true"
     },
-    "HardwareAcceleration": "false",
+    "AutoLogin": "true",
+    "AutoStartMinimized": "true",
+    "HardwareAcceleration": "true",
     "Install": {
       "DownloadLimitNextPatchInBps": "0"
-    },
-    "Sound": {
-      "Enabled": "false"
-    },
-    "Streaming": {
-      "StreamingEnabled": "false"
     }
   },
-  "w3": {
-    "AdditionalLaunchArguments": "-windowmode fullscreen"
+  "Games": {
+    "battle_net": {
+      "ServerUid": "battle.net",
+      "Resumable": "false"
+    },
+    "w3": {
+      "AdditionalLaunchArguments": "-graphicsapi Direct3D12"
+    }
   }
 }

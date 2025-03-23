@@ -12,7 +12,13 @@ pkgs.writeShellApplication {
       wine-wow64-staging-10_4
       wine-wow64-staging-winetricks-10_4
     ])
-    ++ [inputs.lutris-overlay.packages.x86_64-linux.lutris];
+    ++ [
+      inputs.lutris-overlay.packages.x86_64-linux.lutris
+    ]
+    ++ (with pkgs; [
+      mesa
+      driversi686Linux.mesa
+    ]);
   text =
     environment
     + ''

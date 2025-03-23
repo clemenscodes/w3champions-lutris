@@ -12,7 +12,13 @@ pkgs.writeShellApplication {
       wine-wow64-staging-10_4
       wine-wow64-staging-winetricks-10_4
     ])
-    ++ (with pkgs; [curl]);
+    ++ (with pkgs; [
+      curl
+      dxvk
+      vkd3d
+      mesa
+      driversi686Linux.mesa
+    ]);
   text =
     environment
     + ''
@@ -20,6 +26,7 @@ pkgs.writeShellApplication {
 
       if [ ! -f "$BONJOUR_MSI" ]; then
         echo "Downloading Bonjour installer..."
+        mkdir -p "$DOWNLOADS"
         curl -L "$BONJOUR_URL" -o "$BONJOUR_MSI"
       else
         echo "Bonjour installer already downloaded."

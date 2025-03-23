@@ -15,11 +15,16 @@ pkgs.writeShellApplication {
     ++ (with pkgs; [
       winetricks
       curl
+      dxvk
+      vkd3d
+      mesa
+      driversi686Linux.mesa
     ]);
   text =
     environment
     + ''
       echo "Downloading WebView2 runtime installer..."
+      mkdir -p "$DOWNLOADS"
       curl -L "$WEBVIEW2_URL" -o "$WEBVIEW2_SETUP_EXE"
 
       echo "Installing the WebView2 runtime..."

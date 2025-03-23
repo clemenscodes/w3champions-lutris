@@ -9,8 +9,13 @@ pkgs.writeShellApplication {
   name = "battlenet";
   runtimeInputs =
     (with inputs.wine-overlays.packages.x86_64-linux; [
-      wine-wow64-staging-10_4
-      wine-wow64-staging-winetricks-10_4
+      # wine-wow64-staging-10_4
+      # wine-wow64-staging-winetricks-10_4
+    ])
+    ++ (with self.packages.x86_64-linux; [
+      # umu
+      # wine-tkg
+      wine-ge
     ])
     ++ (with pkgs; [
       winetricks
@@ -27,14 +32,15 @@ pkgs.writeShellApplication {
 
       if [ ! -f "$BNET_SETUP_EXE" ]; then
         echo "Downloading Battle.net launcher..."
+        mkdir -p "$DOWNLOADS"
         curl -L "$BATTLENET_URL" -o "$BNET_SETUP_EXE"
       else
         echo "Battle.net launcher already downloaded."
       fi
 
-      echo "Writing a Battle.net config file"
-      mkdir -p "$BNET_CONFIG_HOME"
-      cat ${self}/assets/Battle.net.config.json > "$BNET_CONFIG"
+      # echo "Writing a Battle.net config file"
+      # mkdir -p "$BNET_CONFIG_HOME"
+      # cat ${self}/assets/Battle.net.config.json > "$BNET_CONFIG"
 
       echo "Running Battle.net setup..."
       wine "$BNET_SETUP_EXE"
