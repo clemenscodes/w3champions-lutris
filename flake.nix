@@ -48,22 +48,22 @@
       withDeltaUpdates = true;
     };
     environment = ''
-      # [ -f ./wine64 ] && rm ./wine64
-      # ln -s "$(which wine)" ./wine64
-      # PATH="$(pwd):$PATH"
+      [ -f ./wine64 ] && rm ./wine64
+      ln -s "$(which wine)" ./wine64
+      PATH="$(pwd):$PATH"
 
       export VK_DRIVER_FILES="/run/opengl-driver/share/vulkan/icd.d/radeon_icd.x86_64.json:/run/opengl-driver-32/share/vulkan/icd.d/radeon_icd.i686.json"
       export VK_ICD_FILENAMES="/run/opengl-driver/share/vulkan/icd.d/radeon_icd.x86_64.json:/run/opengl-driver-32/share/vulkan/icd.d/radeon_icd.i686.json"
-      export DISABLE_LAYER_AMD_SWITCHABLE_GRAPHICS_1=1
+      # export DISABLE_LAYER_AMD_SWITCHABLE_GRAPHICS_1=1
 
       # export WINEPATH="$HOME/.local/share/wineprefixes"
       export WINEPATH="$HOME/Games"
       export WINEPREFIX="$WINEPATH/w3champions"
-      export WINE="${inputs.wine-overlays.packages.${system}.wine-wow64-staging-winetricks-10_4}/bin/wine64"
+      export WINE="./wine64"
       export WINEARCH=win64
-      export WINEESYNC=1
-      export WINEFSYNC=1
-      export WINEDEBUG=-all
+      # export WINEESYNC=1
+      # export WINEFSYNC=1
+      # export WINEDEBUG=-all
       # export WINEDLLOVERRIDES="d3d10core,d3d11,d3d12,d3d9,d3dcompiler_42,d3dcompiler_43,d3dcompiler_46,d3dcompiler_47,d3dx10,d3dx10_33,d3dx10_34,d3dx10_35,d3dx10_36,d3dx10_37,d3dx10_38,d3dx10_39,d3dx10_40,d3dx10_41,d3dx10_42,d3dx10_43,d3dx11_42,d3dx11_43,d3dx9_24,d3dx9_25,d3dx9_26,d3dx9_27,d3dx9_28,d3dx9_29,d3dx9_30,d3dx9_31,d3dx9_32,d3dx9_33,d3dx9_34,d3dx9_35,d3dx9_36,d3dx9_37,d3dx9_38,d3dx9_39,d3dx9_40,d3dx9_41,d3dx9_42,d3dx9_43,dxgi,nvapi,nvapi64,nvml=n;winemenubuilder="
       # export WINE_LARGE_ADDRESS_AWARE=1
       # export WINE_FULLSCREEN_FSR=1
@@ -72,7 +72,7 @@
       # export DXVK_NVAPIHACK=0
       # export DXVK_ENABLE_NVAPI=1
       # export DXVK_LOG_LEVEL="info"
-      #
+
       export DOWNLOADS="$WINEPREFIX/drive_c/users/$USER/Downloads"
       export PROGRAM_FILES="$WINEPREFIX/drive_c/Program Files"
       export PROGRAM_FILES86="$WINEPREFIX/drive_c/Program Files (x86)"
@@ -120,9 +120,7 @@
         default = pkgs.mkShell {
           buildInputs =
             [
-              # inputs.wine-overlays.packages.${system}.wine-wow-staging-10_4
-              # inputs.wine-overlays.packages.${system}.wine-wow64-staging-10_4
-              # inputs.wine-overlays.packages.${system}.wine-wow64-staging-winetricks-10_4
+              inputs.wine-overlays.packages.${system}.wine-wow64-staging-10_4
               pkgs.winetricks
               pkgs.curl
               pkgs.samba
@@ -142,7 +140,7 @@
               webview2
               lutris-install
               # wine-tkg
-              wine-ge
+              # wine-ge
               # wine-osu
             ]);
           shellHook =
