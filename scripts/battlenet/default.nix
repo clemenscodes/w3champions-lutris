@@ -12,7 +12,7 @@ pkgs.writeShellApplication {
       # wine-wow64-staging-10_4
     ])
     ++ (with self.packages.x86_64-linux; [
-      # umu
+      umu
       # wine-tkg
       # wine-ge
     ])
@@ -23,6 +23,10 @@ pkgs.writeShellApplication {
       jansson
       gnutls
       zenity
+      dxvk
+      vkd3d
+      vkd3d.lib
+      vkd3d-proton
       mesa
       driversi686Linux.mesa
     ]);
@@ -39,12 +43,12 @@ pkgs.writeShellApplication {
         echo "Battle.net launcher already downloaded."
       fi
 
-      # echo "Writing a Battle.net config file"
-      # mkdir -p "$BNET_CONFIG_HOME"
-      # cat ${self}/assets/Battle.net.config.json > "$BNET_CONFIG"
+      echo "Writing a Battle.net config file"
+      mkdir -p "$BNET_CONFIG_HOME"
+      cat ${self}/assets/Battle.net.config.json > "$BNET_CONFIG"
 
       echo "Running Battle.net setup..."
-      wine "$BNET_SETUP_EXE"
+      umu-run "$BNET_SETUP_EXE"
 
       if [[ ! -f "$BNET_EXE" ]]; then
         echo "Failed to install Battle.net"

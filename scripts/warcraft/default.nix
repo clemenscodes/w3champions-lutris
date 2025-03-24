@@ -12,6 +12,7 @@ pkgs.writeShellApplication {
       battlenet
       w3champions
       webview2
+      umu
       # wine-ge
     ])
     ++ (with inputs.wine-overlays.packages.x86_64-linux; [
@@ -21,13 +22,15 @@ pkgs.writeShellApplication {
       winetricks
       dxvk
       vkd3d
+      vkd3d.lib
+      vkd3d-proton
       mesa
       driversi686Linux.mesa
     ]);
   text =
     environment
     + ''
-      
+
       rm -rf "$WINEPREFIX"
 
       if [ ! -d "$WINEPREFIX" ]; then
@@ -37,15 +40,15 @@ pkgs.writeShellApplication {
         echo "Wine prefix already exists, skipping initialization."
       fi
 
-      # echo "Setting Windows 7 mode for wine"
-      # wine "$WINEPREFIX/drive_c/windows/regedit.exe" /S "${self}/registry/wine.reg"
-      #
-      # echo "Enabling DXVA2 for wine"
-      # wine "$WINEPREFIX/drive_c/windows/regedit.exe" /S "${self}/registry/dxva2.reg"
+      echo "Setting Windows 10 mode for wine"
+      umu-run "$WINEPREFIX/drive_c/windows/regedit.exe" /S "${self}/registry/wine.reg"
+
+      echo "Enabling DXVA2 for wine"
+      umu-run "$WINEPREFIX/drive_c/windows/regedit.exe" /S "${self}/registry/dxva2.reg"
 
       mkdir -p "$DOWNLOADS"
 
-      winetricks -q --force dxvk vkd3d
+      umu-run winetricks -q --force dxvk vkd3d
 
       webview2
       battlenet

@@ -12,17 +12,19 @@ pkgs.writeShellApplication {
       # wine-wow64-staging-10_4
     ])
     ++ (with self.packages.x86_64-linux; [
-      # umu
+      umu
       # wine-tkg
       # wine-ge
     ])
     ++ (with pkgs; [
       curl
-      dxvk
       samba
       jansson
       gnutls
+      dxvk
       vkd3d
+      vkd3d.lib
+      vkd3d-proton
       mesa
       driversi686Linux.mesa
     ]);
@@ -39,7 +41,7 @@ pkgs.writeShellApplication {
         echo "Bonjour installer already downloaded."
       fi
 
-      wine "$BONJOUR_MSI"
+      umu-run "$BONJOUR_MSI"
 
       if [ ! -f "$BONJOUR_EXE" ]; then
         echo "Failed installing Bonjour"
@@ -48,7 +50,7 @@ pkgs.writeShellApplication {
 
       echo "Running Bonjour..."
 
-      wine net stop 'Bonjour Service'
-      wine net start 'Bonjour Service'
+      umu-run "$WINEPREFIX/drive_c/windows/net.exe" stop 'Bonjour Service'
+      umu-run "$WINEPREFIX/drive_c/windows/net.exe" start 'Bonjour Service'
     '';
 }

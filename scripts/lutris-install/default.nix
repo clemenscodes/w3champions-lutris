@@ -9,11 +9,11 @@ pkgs.writeShellApplication {
   name = "lutris-install";
   runtimeInputs =
     (with inputs.wine-overlays.packages.x86_64-linux; [
-      wine-wow64-staging-10_4
-      wine-wow64-staging-winetricks-10_4
+      # wine-wow64-staging-10_4
+      # wine-wow64-staging-winetricks-10_4
     ])
     ++ (with self.packages.x86_64-linux; [
-      # umu
+      umu
       # wine-tkg
       # wine-ge
     ])
@@ -26,9 +26,10 @@ pkgs.writeShellApplication {
       gnutls
       dxvk
       vkd3d
+      vkd3d.lib
       vkd3d-proton
-      # mesa
-      # driversi686Linux.mesa
+      mesa
+      driversi686Linux.mesa
     ]);
   text =
     environment

@@ -12,17 +12,19 @@ pkgs.writeShellApplication {
       # wine-wow64-staging-10_4
     ])
     ++ (with self.packages.x86_64-linux; [
-      # umu
+      umu
       # wine-tkg
       # wine-ge
     ])
     ++ (with pkgs; [
       curl
-      dxvk
       samba
       jansson
       gnutls
+      dxvk
       vkd3d
+      vkd3d.lib
+      vkd3d-proton
       mesa
       driversi686Linux.mesa
     ]);
@@ -41,6 +43,6 @@ pkgs.writeShellApplication {
 
       echo "Running W3Champions setup..."
       echo "Do not yet launch W3Champions after the installer finishes... a final step will still be needed."
-      wine "$W3C_SETUP_EXE" || exit 1
+      umu-run "$W3C_SETUP_EXE" || exit 1
     '';
 }
