@@ -3,13 +3,9 @@
     extra-substituters = ["https://nix-gaming.cachix.org"];
     extra-trusted-public-keys = ["nix-gaming.cachix.org-1:nbjlureqMbRAxR1gJ/f3hxemL9svXaZF/Ees8vCUUs4="];
   };
-
   inputs = {
     nixpkgs = {
       url = "github:NixOS/nixpkgs/nixos-unstable";
-    };
-    nix-gaming = {
-      url = "github:fufexan/nix-gaming";
     };
     umu = {
       url = "github:Open-Wine-Components/umu-launcher?dir=packaging/nix";
@@ -21,9 +17,19 @@
     };
     lutris-overlay = {
       url = "github:clemenscodes/lutris-overlay";
+      inputs = {
+        nixpkgs = {
+          follows = "nixpkgs";
+        };
+      };
     };
     wine-overlays = {
       url = "github:clemenscodes/wine-overlays";
+      inputs = {
+        nixpkgs = {
+          follows = "nixpkgs";
+        };
+      };
     };
   };
   outputs = {
@@ -48,18 +54,17 @@
       withDeltaUpdates = true;
     };
     environment = ''
-      [ -f ./wine64 ] && rm ./wine64
-      ln -s "$(which wine)" ./wine64
-      PATH="$(pwd):$PATH"
+      # [ -f ./wine64 ] && rm ./wine64
+      # ln -s "$(which wine)" ./wine64
+      # PATH="$(pwd):$PATH"
 
-      export VK_DRIVER_FILES="/run/opengl-driver/share/vulkan/icd.d/radeon_icd.x86_64.json:/run/opengl-driver-32/share/vulkan/icd.d/radeon_icd.i686.json"
-      export VK_ICD_FILENAMES="/run/opengl-driver/share/vulkan/icd.d/radeon_icd.x86_64.json:/run/opengl-driver-32/share/vulkan/icd.d/radeon_icd.i686.json"
+      # export VK_DRIVER_FILES="/run/opengl-driver/share/vulkan/icd.d/radeon_icd.x86_64.json:/run/opengl-driver-32/share/vulkan/icd.d/radeon_icd.i686.json"
+      # export VK_ICD_FILENAMES="/run/opengl-driver/share/vulkan/icd.d/radeon_icd.x86_64.json:/run/opengl-driver-32/share/vulkan/icd.d/radeon_icd.i686.json"
       # export DISABLE_LAYER_AMD_SWITCHABLE_GRAPHICS_1=1
 
       # export WINEPATH="$HOME/.local/share/wineprefixes"
       export WINEPATH="$HOME/Games"
       export WINEPREFIX="$WINEPATH/w3champions"
-      export WINE="./wine64"
       export WINEARCH=win64
       # export WINEESYNC=1
       # export WINEFSYNC=1
@@ -80,7 +85,7 @@
       export APPDATA_LOCAL="$APPDATA/Local"
       export APPDATA_ROAMING="$APPDATA/Roaming"
 
-      export WEBVIEW2_URL="https://go.microsoft.com/fwlink/?linkid=2124703"
+      export WEBVIEW2_URL="https://go.microsoft.com/fwlink/?linkid=2124701"
       export WEBVIEW2_SETUP_EXE="$DOWNLOADS/MicrosoftEdgeWebview2Setup.exe"
 
       export BONJOUR_URL="https://cdn.discordapp.com/attachments/797076711023050753/1347196008710279209/Bonjour64.msi?ex=67df60ce&is=67de0f4e&hm=3a3bf8c2cd770e6a795460004ebfafee0c59d04b03435decbfd9cf55b050fed7&"
@@ -110,7 +115,14 @@
           webview2
           lutris-install
           ;
-        inherit (inputs.nix-gaming.packages.${system}) wine-ge wine-osu wine-tkg;
+        inherit
+          (inputs.wine-overlays.packages.${system})
+          wine-ge
+          wine-osu
+          wine-tkg
+          wine-wow64-staging-10_4
+          wine-wow64-staging-winetricks-10_4
+          ;
         inherit umu;
         default = self.packages.${system}.lutris-install;
       };
@@ -120,16 +132,15 @@
         default = pkgs.mkShell {
           buildInputs =
             [
-              inputs.wine-overlays.packages.${system}.wine-wow64-staging-10_4
               pkgs.winetricks
               pkgs.curl
               pkgs.samba
               pkgs.jansson
               pkgs.gnutls
               pkgs.zenity
-              pkgs.lutris
               pkgs.mesa
               pkgs.driversi686Linux.mesa
+              pkgs.lutris
               umu
             ]
             ++ (with self.packages.${system}; [
@@ -140,7 +151,7 @@
               webview2
               lutris-install
               # wine-tkg
-              # wine-ge
+              wine-ge
               # wine-osu
             ]);
           shellHook =

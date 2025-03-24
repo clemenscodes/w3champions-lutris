@@ -15,7 +15,7 @@ pkgs.writeShellApplication {
       # wine-ge
     ])
     ++ (with inputs.wine-overlays.packages.x86_64-linux; [
-      wine-wow64-staging-10_4
+      # wine-wow64-staging-10_4
     ])
     ++ (with pkgs; [
       winetricks
@@ -27,6 +27,7 @@ pkgs.writeShellApplication {
   text =
     environment
     + ''
+      
       rm -rf "$WINEPREFIX"
 
       if [ ! -d "$WINEPREFIX" ]; then
@@ -36,18 +37,18 @@ pkgs.writeShellApplication {
         echo "Wine prefix already exists, skipping initialization."
       fi
 
-      echo "Setting Windows 7 mode for wine"
-      wine "$WINEPREFIX/drive_c/windows/regedit.exe" /S "${self}/registry/wine.reg"
+      # echo "Setting Windows 7 mode for wine"
+      # wine "$WINEPREFIX/drive_c/windows/regedit.exe" /S "${self}/registry/wine.reg"
+      #
+      # echo "Enabling DXVA2 for wine"
+      # wine "$WINEPREFIX/drive_c/windows/regedit.exe" /S "${self}/registry/dxva2.reg"
 
-      echo "Enabling DXVA2 for wine"
-      wine "$WINEPREFIX/drive_c/windows/regedit.exe" /S "${self}/registry/dxva2.reg"
-      
       mkdir -p "$DOWNLOADS"
 
       winetricks -q --force dxvk vkd3d
 
+      webview2
       battlenet
       w3champions
-      webview2
     '';
 }

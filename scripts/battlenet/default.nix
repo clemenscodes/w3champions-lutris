@@ -9,7 +9,7 @@ pkgs.writeShellApplication {
   name = "battlenet";
   runtimeInputs =
     (with inputs.wine-overlays.packages.x86_64-linux; [
-      wine-wow64-staging-10_4
+      # wine-wow64-staging-10_4
     ])
     ++ (with self.packages.x86_64-linux; [
       # umu

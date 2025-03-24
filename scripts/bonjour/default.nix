@@ -9,7 +9,7 @@ pkgs.writeShellApplication {
   name = "bonjour";
   runtimeInputs =
     (with inputs.wine-overlays.packages.x86_64-linux; [
-      wine-wow64-staging-10_4
+      # wine-wow64-staging-10_4
     ])
     ++ (with self.packages.x86_64-linux; [
       # umu
@@ -19,6 +19,9 @@ pkgs.writeShellApplication {
     ++ (with pkgs; [
       curl
       dxvk
+      samba
+      jansson
+      gnutls
       vkd3d
       mesa
       driversi686Linux.mesa
