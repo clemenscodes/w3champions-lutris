@@ -60,25 +60,46 @@
 
       # export VK_DRIVER_FILES="/run/opengl-driver/share/vulkan/icd.d/radeon_icd.x86_64.json:/run/opengl-driver-32/share/vulkan/icd.d/radeon_icd.i686.json"
       # export VK_ICD_FILENAMES="/run/opengl-driver/share/vulkan/icd.d/radeon_icd.x86_64.json:/run/opengl-driver-32/share/vulkan/icd.d/radeon_icd.i686.json"
-      # export DISABLE_LAYER_AMD_SWITCHABLE_GRAPHICS_1=1
+      export VK_INSTANCE_LAYERS=VK_LAYER_KHRONOS_validation
 
       # export WINEPATH="$HOME/.local/share/wineprefixes"
       export WINEPATH="$HOME/Games"
       export WINEPREFIX="$WINEPATH/w3champions"
       export WINEARCH=win64
+      export WINE_LARGE_ADDRESS_AWARE=1
+      export WINEDEBUG=-all
+      export WINEESYNC=1
+      export WINEFSYNC=1
+      # export WINEDLLOVERRIDES="d3d10core,d3d11,d3d12,d3d9,d3dcompiler_42,d3dcompiler_43,d3dcompiler_46,d3dcompiler_47,d3dx10,d3dx10_33,d3dx10_34,d3dx10_35,d3dx10_36,d3dx10_37,d3dx10_38,d3dx10_39,d3dx10_40,d3dx10_41,d3dx10_42,d3dx10_43,d3dx11_42,d3dx11_43,d3dx9_24,d3dx9_25,d3dx9_26,d3dx9_27,d3dx9_28,d3dx9_29,d3dx9_30,d3dx9_31,d3dx9_32,d3dx9_33,d3dx9_34,d3dx9_35,d3dx9_36,d3dx9_37,d3dx9_38,d3dx9_39,d3dx9_40,d3dx9_41,d3dx9_42,d3dx9_43,dxgi,nvapi,nvapi64,nvml=n;winemenubuilder="
+      # export WINE_FULLSCREEN_FSR=1
+      # export STAGING_SHARED_MEMORY=1
+
       export GAMEID=umu-default
       export STORE=none
-      # export WINEESYNC=1
-      # export WINEFSYNC=1
-      # export WINEDEBUG=-all
-      # export WINEDLLOVERRIDES="d3d10core,d3d11,d3d12,d3d9,d3dcompiler_42,d3dcompiler_43,d3dcompiler_46,d3dcompiler_47,d3dx10,d3dx10_33,d3dx10_34,d3dx10_35,d3dx10_36,d3dx10_37,d3dx10_38,d3dx10_39,d3dx10_40,d3dx10_41,d3dx10_42,d3dx10_43,d3dx11_42,d3dx11_43,d3dx9_24,d3dx9_25,d3dx9_26,d3dx9_27,d3dx9_28,d3dx9_29,d3dx9_30,d3dx9_31,d3dx9_32,d3dx9_33,d3dx9_34,d3dx9_35,d3dx9_36,d3dx9_37,d3dx9_38,d3dx9_39,d3dx9_40,d3dx9_41,d3dx9_42,d3dx9_43,dxgi,nvapi,nvapi64,nvml=n;winemenubuilder="
-      # export WINE_LARGE_ADDRESS_AWARE=1
-      # export WINE_FULLSCREEN_FSR=1
-      export STAGING_SHARED_MEMORY=1
-      # export DXVK_HUD=1
+      export UMU_LOG=debug
+      export UMU_ZENITY=1
+      export UMU_RUNTIME_UPDATE=0
+      export PROTON_VERB=waitforexitandrun
+
+      export STEAM_LINUX_RUNTIME_VERBOSE=1
+      export STEAM_LINUX_RUNTIME_LOG=1
+
+      export PROTON_LOG=1
+      export PROTON_USE_WINED3D=0
+      export PROTON_NO_ESYNC=0
+      export PROTON_NO_FSYNC=0
+      export PROTON_USE_SECCOMP=1
+      export PROTON_FORCE_LARGE_ADDRESS_AWARE=1
+      export PROTON_DUMP_DEBUG_COMMANDS=1
+      export PROTON_DEBUG_DIR="$WINEPREFIX"
+
+      export DXVK_HUD=1
+      export DXVK_STATE_CACHE_PATH="$WINEPREFIX"
+      export DXVK_LOG_LEVEL="info"
+      export DXVK_LOG_PATH="$WINEPREFIX"
+      export DXVK_CONFIGURATION_FILE="${self}/dxvk.conf"
       # export DXVK_NVAPIHACK=0
       # export DXVK_ENABLE_NVAPI=1
-      # export DXVK_LOG_LEVEL="info"
 
       export DOWNLOADS="$WINEPREFIX/drive_c/users/$USER/Downloads"
       export PROGRAM_FILES="$WINEPREFIX/drive_c/Program Files"
@@ -147,6 +168,7 @@
               pkgs.vkd3d-proton
               pkgs.driversi686Linux.mesa
               pkgs.lutris
+              pkgs.protontricks
               umu
             ]
             ++ (with self.packages.${system}; [

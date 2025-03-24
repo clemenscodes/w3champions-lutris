@@ -34,8 +34,11 @@ pkgs.writeShellApplication {
     environment
     + ''
       echo "Downloading WebView2 runtime installer..."
-      mkdir -p "$DOWNLOADS"
-      curl -L "$WEBVIEW2_URL" -o "$WEBVIEW2_SETUP_EXE"
+
+      if [ ! -f "$WEBVIEW2_SETUP_EXE" ]; then
+        mkdir -p "$DOWNLOADS"
+        curl -L "$WEBVIEW2_URL" -o "$WEBVIEW2_SETUP_EXE"
+      fi
 
       echo "Installing the WebView2 runtime..."
       umu-run "$WEBVIEW2_SETUP_EXE" || exit 1
