@@ -7,42 +7,27 @@
 }:
 pkgs.writeShellApplication {
   name = "w3champions";
-  runtimeInputs =
-    (with inputs.wine-overlays.packages.x86_64-linux; [
-      # wine-wow64-staging-10_4
-    ])
-    ++ (with self.packages.x86_64-linux; [
-      umu
-      # wine-tkg
-      # wine-ge
-    ])
-    ++ (with pkgs; [
-      curl
-      samba
-      jansson
-      gnutls
-      dxvk
-      vkd3d
-      vkd3d.lib
-      vkd3d-proton
-      mesa
-      driversi686Linux.mesa
-    ]);
+  runtimeInputs = [
+    self.packages.x86_64-linux.wine-ge
+    pkgs.curl
+  ];
   text =
     environment
     + ''
-      echo "Installing W3Champions..."
+      if [ ! -f "$W3C_EXE" ]; then
+        echo "Installing W3Champions..."
 
-      if [ ! -f "$W3C_SETUP_EXE" ]; then
-          echo "Downloading W3Champions launcher..."
-          mkdir -p "$DOWNLOADS"
-          curl -L "$W3C_URL" -o "$W3C_SETUP_EXE"
-      else
-          echo "W3Champions launcher already downloaded."
+        if [ ! -f "$W3C_SETUP_EXE" ]; then
+            echo "Downloading W3Champions launcher..."
+            mkdir -p "$DOWNLOADS"
+            curl -L "$W3C_URL" -o "$W3C_SETUP_EXE"
+        else
+            echo "W3Champions launcher already downloaded."
+        fi
+
+        echo "Running W3Champions setup..."
+        echo "Do not yet launch W3Champions after the installer finishes... a final step will still be needed."
+        wine "$W3C_SETUP_EXE"
       fi
-
-      echo "Running W3Champions setup..."
-      echo "Do not yet launch W3Champions after the installer finishes... a final step will still be needed."
-      umu-run "$W3C_SETUP_EXE" || exit 1
     '';
 }

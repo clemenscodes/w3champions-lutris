@@ -16,7 +16,7 @@
       "Resumable": "false"
     },
     "w3": {
-      "AdditionalLaunchArguments": "-graphicsapi Direct3D12"
+      "AdditionalLaunchArguments": "-graphicsapi Direct3D11"
     }
   }
 }

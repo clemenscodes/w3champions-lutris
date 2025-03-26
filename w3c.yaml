@@ -46,6 +46,7 @@ script:
         arch: win64
         description: Installing Tahoma font
         name: winetricks
+        silent: true
         prefix: $GAMEDIR
     - task:
         arch: win64
@@ -83,16 +84,15 @@ script:
     - merge:
         dst: $GAMEDIR/drive_c/
         src: setup
-    - execute:
-        command: WINEESYNC=1 WINEPREFIX="$GAMEDIR" "$WINEBIN" "$GAMEDIR/drive_c/Battle.net-Setup.exe"
+    - task:
+        arch: win64
+        executable: setup
+        name: wineexec
         description: "Installing Blizzard App
 
           ------------------------------
 
           Login to battle.net. Install and run Warcraft III once before proceeding."
-    - task:
-        name: winekill
-        prefix: $GAMEDIR
     - task:
         arch: win64
         description: "Installing w3champions...
@@ -102,9 +102,6 @@ script:
           Do not run w3champions at the end of setup. "
         executable: w3champions
         name: wineexec
-    - task:
-        name: winekill
-        prefix: $GAMEDIR
     - task:
         arch: win64
         description: "Installing webview2...
@@ -119,9 +116,6 @@ script:
         path: HKEY_CURRENT_USER\Software\Wine\AppDefaults\msedgewebview2.exe
         prefix: $GAMEDIR
         value: win7
-    - task:
-        name: winekill
-        prefix: $GAMEDIR
   system:
     env:
       DXVK_STATE_CACHE_PATH: $GAMEDIR

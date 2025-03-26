@@ -7,51 +7,22 @@
 }:
 pkgs.writeShellApplication {
   name = "warcraft";
-  runtimeInputs =
-    (with self.packages.x86_64-linux; [
-      battlenet
-      w3champions
-      webview2
-      umu
-      # wine-ge
-    ])
-    ++ (with inputs.wine-overlays.packages.x86_64-linux; [
-      # wine-wow64-staging-10_4
-    ])
-    ++ (with pkgs; [
-      winetricks
-      dxvk
-      vkd3d
-      vkd3d.lib
-      vkd3d-proton
-      mesa
-      driversi686Linux.mesa
-    ]);
+  runtimeInputs = [
+    self.packages.x86_64-linux.wine-ge
+    self.packages.x86_64-linux.battlenet
+    self.packages.x86_64-linux.w3champions-legacy
+  ];
   text =
     environment
     + ''
-
-      rm -rf "$WINEPREFIX"
-
       if [ ! -d "$WINEPREFIX" ]; then
-        echo "Initializing Wine prefix..."
+        echo "Creating wine prefix..."
         mkdir -p "$WINEPREFIX"
-      else
-        echo "Wine prefix already exists, skipping initialization."
       fi
 
-      echo "Setting Windows 10 mode for wine"
-      umu-run "$WINEPREFIX/drive_c/windows/regedit.exe" /S "${self}/registry/wine.reg"
-
-      echo "Enabling DXVA2 for wine"
-      umu-run "$WINEPREFIX/drive_c/windows/regedit.exe" /S "${self}/registry/dxva2.reg"
-
-      mkdir -p "$DOWNLOADS"
-
-      umu-run winetricks -q --force dxvk vkd3d
-
-      webview2
       battlenet
-      w3champions
+      w3champions-legacy
+
+      wine "$W3C_LEGACY_EXE"
     '';
 }
