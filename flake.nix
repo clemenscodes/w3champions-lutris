@@ -61,7 +61,7 @@
         pkgs.vulkan-validation-layers
         pkgs.vulkan-tools-lunarg
         pkgs.vulkan-extension-layer
-        pkgs.wineWowPackages.unstableFull
+        # pkgs.wineWowPackages.unstableFull
       ]
       ++ (with self.packages.${system}; [
         warcraft
@@ -74,8 +74,8 @@
         lutris-install
         winetricks
         winetricks-legacy
-        # wine-wow64-staging-10_4
-        # wine-wow64-staging-winetricks-10_4
+        wine-wow64-staging-10_4
+        wine-wow64-staging-winetricks-10_4
       ]);
     GST_PLUGIN_SYSTEM_PATH_1_0 = lib.makeSearchPathOutput "lib" "lib/gstreamer-1.0" [
       pkgs.gst_all_1.gst-plugins-base
