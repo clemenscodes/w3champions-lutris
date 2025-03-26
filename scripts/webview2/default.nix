@@ -7,55 +7,41 @@
 }:
 pkgs.writeShellApplication {
   name = "webview2";
-  runtimeInputs =
-    (with inputs.wine-overlays.packages.x86_64-linux; [
-      # wine-wow64-staging-10_4
-    ])
-    ++ (with self.packages.x86_64-linux; [
-      battlenet
-      w3champions
-      # wine-ge
-    ])
-    ++ (with pkgs; [
-      winetricks
-      curl
-      samba
-      jansson
-      gnutls
-      dxvk
-      vkd3d
-      mesa
-      driversi686Linux.mesa
-    ]);
+  runtimeInputs = [
+    self.packages.x86_64-linux.wine-wow64-staging-10_4
+    self.packages.x86_64-linux.wine-wow64-staging-winetricks-10_4
+    # pkgs.wineWowPackages.unstableFull
+    pkgs.curl
+    pkgs.samba
+    pkgs.jansson
+    pkgs.gnutls
+  ];
   text =
     environment
     + ''
-      echo "Downloading WebView2 runtime installer..."
-      mkdir -p "$DOWNLOADS"
-      curl -L "$WEBVIEW2_URL" -o "$WEBVIEW2_SETUP_EXE"
+      if [ ! -d "$PROGRAM_FILES86/Microsoft/EdgeWebView/Application" ]; then
+        if [ ! -f "$WEBVIEW2_SETUP_EXE" ]; then
+          echo "Downloading WebView2 runtime installer..."
+          mkdir -p "$DOWNLOADS"
+          curl -L "$WEBVIEW2_URL" -o "$WEBVIEW2_SETUP_EXE"
+        fi
 
-      echo "Installing the WebView2 runtime..."
-      wine "$WEBVIEW2_SETUP_EXE" || exit 1
+        echo "Installing the WebView2 runtime..."
+        wine "$WEBVIEW2_SETUP_EXE" || exit 1
 
-      echo "Setting 'msedgewebview2.exe' to Windows 7"
-      wine "$WINEPREFIX/drive_c/windows/regedit.exe" /S "${self}/registry/msedgewebview2.exe.reg"
+        echo "Setting 'msedgewebview2.exe' to Windows 7"
+        wine "$WINEPREFIX/drive_c/windows/regedit.exe" /S "${self}/registry/msedgewebview2.exe.reg"
 
-      echo "Installing d3dcompiler_47 for WebView2..."
-      winetricks -q --force d3dcompiler_47 || true
+        echo "Successfully installed WebView2 runtime"
 
-      echo "Installing d3drm for WebView2..."
-      winetricks -q --force d3drm || true
+        wineserver -k
 
-      echo "Installing d3dx11_42 for WebView2..."
-      winetricks -q --force d3dx11_42 || true
-
-      echo "Successfully installed WebView2 runtime"
-
-      echo "Now, to finish off, installing vcrun2017, ole32 and mf is needed using winetricks"
-      echo "For some reason, this will hang endlessly when ran in a script, but it will work when running manually in a terminal"
-      echo "Run the following command in the terminal"
-      echo "winetricks -q --force vcrun2017 ole32 mf"
-      echo "Any errors during this installation regarding winemenubuilder can be ignored."
-      echo "Additionally, it may be required to set Battle.net.exe and BlizzardBrowser.exe to Windows 7"
+        echo "Now, to finish off, installing vcrun2017, ole32 and mf is needed using winetricks"
+        echo "For some reason, this will hang endlessly when ran in a script, but it will work when running manually in a terminal"
+        echo "Run the following command in the terminal"
+        echo "winetricks -q --force vcrun2017 ole32 mf"
+        echo "Any errors during this installation regarding winemenubuilder can be ignored."
+        echo "Additionally, it may be required to set Battle.net.exe and BlizzardBrowser.exe to Windows 7"
+      fi
     '';
 }

@@ -7,48 +7,39 @@
 }:
 pkgs.writeShellApplication {
   name = "warcraft";
-  runtimeInputs =
-    (with self.packages.x86_64-linux; [
-      battlenet
-      w3champions
-      webview2
-      # wine-ge
-    ])
-    ++ (with inputs.wine-overlays.packages.x86_64-linux; [
-      # wine-wow64-staging-10_4
-    ])
-    ++ (with pkgs; [
-      winetricks
-      dxvk
-      vkd3d
-      mesa
-      driversi686Linux.mesa
-    ]);
+  runtimeInputs = [
+    self.packages.x86_64-linux.wine-wow64-staging-10_4
+    self.packages.x86_64-linux.wine-wow64-staging-winetricks-10_4
+    # pkgs.wineWowPackages.unstableFull
+    self.packages.x86_64-linux.battlenet
+    self.packages.x86_64-linux.w3champions
+    self.packages.x86_64-linux.webview2
+    pkgs.samba
+    pkgs.jansson
+    pkgs.gnutls
+  ];
   text =
     environment
     + ''
-      
-      rm -rf "$WINEPREFIX"
-
       if [ ! -d "$WINEPREFIX" ]; then
-        echo "Initializing Wine prefix..."
+        echo "Creating wine prefix..."
         mkdir -p "$WINEPREFIX"
-      else
-        echo "Wine prefix already exists, skipping initialization."
       fi
 
-      # echo "Setting Windows 7 mode for wine"
-      # wine "$WINEPREFIX/drive_c/windows/regedit.exe" /S "${self}/registry/wine.reg"
-      #
-      # echo "Enabling DXVA2 for wine"
-      # wine "$WINEPREFIX/drive_c/windows/regedit.exe" /S "${self}/registry/dxva2.reg"
-
-      mkdir -p "$DOWNLOADS"
-
-      winetricks -q --force dxvk vkd3d
-
-      webview2
       battlenet
       w3champions
+      webview2
+
+      WARCRAFT_PATH="''${WARCRAFT_PATH:-}"
+
+      if [ -n "$WARCRAFT_PATH" ]; then
+        echo "Copying $WARCRAFT_PATH to $WARCRAFT_HOME"
+        cp -r "$WARCRAFT_PATH" "$WARCRAFT_HOME"
+        rm -rf "$WARCRAFT_HOME/_retail_/webui" || true
+        mkdir -p "$WARCRAFT_HOME/_retail_/webui"
+        cp ${self}/assets/index.html "$WARCRAFT_HOME/_retail_/webui/index.html"
+      fi
+
+      wine "$W3C_EXE"
     '';
 }
