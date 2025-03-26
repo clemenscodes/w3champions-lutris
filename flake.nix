@@ -61,6 +61,7 @@
         pkgs.vulkan-validation-layers
         pkgs.vulkan-tools-lunarg
         pkgs.vulkan-extension-layer
+        pkgs.wineWowPackages.unstableFull
       ]
       ++ (with self.packages.${system}; [
         warcraft
@@ -73,8 +74,8 @@
         lutris-install
         winetricks
         winetricks-legacy
-        wine-wow64-staging-10_4
-        wine-wow64-staging-winetricks-10_4
+        # wine-wow64-staging-10_4
+        # wine-wow64-staging-winetricks-10_4
       ]);
     GST_PLUGIN_SYSTEM_PATH_1_0 = lib.makeSearchPathOutput "lib" "lib/gstreamer-1.0" [
       pkgs.gst_all_1.gst-plugins-base
@@ -150,6 +151,10 @@
       export W3C_APPDATA="$APPDATA_LOCAL/com.w3champions.client"
 
       export WARCRAFT_HOME="$PROGRAM_FILES86/Warcraft III"
+
+      rm ./wine64 || true
+      ln -s "$(which wine)" ./wine64
+      PATH="$(pwd):$PATH"
     '';
     environment-legacy = ''
       export __EGL_VENDOR_LIBRARY_DIRS="/run/opengl-driver/share/glvnd/egl_vendor.d:/run/opengl-driver-32/share/glvnd/egl_vendor.d"
@@ -211,6 +216,10 @@
       export W3C_APPDATA="$APPDATA_LOCAL/com.w3champions.client"
 
       export WARCRAFT_HOME="$PROGRAM_FILES86/Warcraft III"
+
+      rm ./wine64 || true
+      ln -s "$(which wine)" ./wine64
+      PATH="$(pwd):$PATH"
     '';
   in {
     packages = {
