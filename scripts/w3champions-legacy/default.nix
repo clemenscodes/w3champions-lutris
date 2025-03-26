@@ -2,7 +2,7 @@
   self,
   inputs,
   pkgs,
-  environment,
+  environment-legacy,
   ...
 }:
 pkgs.writeShellApplication {
@@ -12,7 +12,7 @@ pkgs.writeShellApplication {
     pkgs.curl
   ];
   text =
-    environment
+    environment-legacy
     + ''
       if [ ! -f "$W3C_LEGACY_EXE" ]; then
         echo "Installing W3Champions legacy..."

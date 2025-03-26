@@ -2,14 +2,13 @@
   self,
   inputs,
   pkgs,
-  environment,
+  environment-legacy,
   ...
 }:
 pkgs.writeShellApplication {
-  name = "battlenet";
+  name = "battlenet-legacy";
   runtimeInputs = [
-    self.packages.x86_64-linux.wine-wow64-staging-10_4
-    self.packages.x86_64-linux.wine-wow64-staging-winetricks-10_4
+    self.packages.x86_64-linux.wine-ge
     pkgs.winetricks
     pkgs.curl
     pkgs.samba
@@ -17,7 +16,7 @@ pkgs.writeShellApplication {
     pkgs.gnutls
   ];
   text =
-    environment
+    environment-legacy
     + ''
       if [ ! -f "$BNET_EXE" ]; then
         echo "Installing Battle.net..."
