@@ -148,6 +148,8 @@
       export W3C_EXE="$PROGRAM_FILES/W3Champions/W3Champions.exe"
       export W3C_LEGACY_EXE="$WINEPREFIX/drive_c/users/$USER/AppData/Local/Programs/w3champions/w3champions.exe"
       export W3C_APPDATA="$APPDATA_LOCAL/com.w3champions.client"
+
+      export WARCRAFT_HOME="$PROGRAM_FILES86/Warcraft III"
     '';
     environment-legacy = ''
       export __EGL_VENDOR_LIBRARY_DIRS="/run/opengl-driver/share/glvnd/egl_vendor.d:/run/opengl-driver-32/share/glvnd/egl_vendor.d"
@@ -207,6 +209,8 @@
       export W3C_EXE="$PROGRAM_FILES/W3Champions/W3Champions.exe"
       export W3C_LEGACY_EXE="$WINEPREFIX/drive_c/users/$USER/AppData/Local/Programs/w3champions/w3champions.exe"
       export W3C_APPDATA="$APPDATA_LOCAL/com.w3champions.client"
+
+      export WARCRAFT_HOME="$PROGRAM_FILES86/Warcraft III"
     '';
   in {
     packages = {

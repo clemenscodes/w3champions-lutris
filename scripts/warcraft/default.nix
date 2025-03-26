@@ -29,6 +29,16 @@ pkgs.writeShellApplication {
       w3champions
       webview2
 
+      WARCRAFT_PATH="''${WARCRAFT_PATH:-}"
+
+      if [ -n "$WARCRAFT_PATH" ]; then
+        echo "Copying $WARCRAFT_PATH to $WARCRAFT_HOME"
+        cp -r "$WARCRAFT_PATH" "$WARCRAFT_HOME"
+        rm -rf "$WARCRAFT_HOME/_retail_/webui" || true
+        mkdir -p "$WARCRAFT_HOME/_retail_/webui"
+        cp ${self}/assets/index.html "$WARCRAFT_HOME/_retail_/webui/index.html"
+      fi
+
       wine "$W3C_EXE"
     '';
 }

@@ -23,6 +23,13 @@ pkgs.writeShellApplication {
       battlenet-legacy
       w3champions-legacy
 
+      WARCRAFT_PATH="''${WARCRAFT_PATH:-}"
+
+      if [ -n "$WARCRAFT_PATH" ]; then
+        echo "Copying $WARCRAFT_PATH to $WARCRAFT_HOME"
+        cp -r "$WARCRAFT_PATH" "$WARCRAFT_HOME"
+      fi
+
       echo
       echo "After starting Battle.net via W3Champions, it is necessary to restart Bonjour."
       echo
