@@ -104,7 +104,7 @@
 
       export GST_PLUGIN_SYSTEM_PATH_1_0="${GST_PLUGIN_SYSTEM_PATH_1_0}"
 
-      export WINEPATH="$HOME/.local/share/wineprefixes"
+      export WINEPATH="$HOME/Games"
       export WINEPREFIX="$WINEPATH/w3champions"
       export WINEARCH="win64"
       export WINE_LARGE_ADDRESS_AWARE="1"
@@ -169,7 +169,7 @@
 
       export GST_PLUGIN_SYSTEM_PATH_1_0="${GST_PLUGIN_SYSTEM_PATH_1_0}"
 
-      export WINEPATH="$HOME/.local/share/wineprefixes"
+      export WINEPATH="$HOME/Games"
       export WINEPREFIX="$WINEPATH/bnet"
       export WINEARCH="win64"
       export WINE_LARGE_ADDRESS_AWARE="1"

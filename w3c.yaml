@@ -1,4 +1,4 @@
-description: "Installs Battle.net + W3Champions + Webview2. Note: you need to run Battle.Net, install and then run Warcraft III before W3Champions will work."
+description: "Installs WebView2 + Battle.net + W3Champions. Note: Proton-GE-9-26 is recommended. You need to run Battle.Net, install and then run Warcraft III before W3Champions will work. Then have Battle.net running before running W3Champions."
 game_slug: w3champions
 gogslug: ""
 humblestoreid: ""
@@ -35,78 +35,8 @@ script:
         name: create_prefix
         prefix: $GAMEDIR
     - task:
-        app: arial
         arch: win64
-        description: Installing Arial font...
-        name: winetricks
-        prefix: $GAMEDIR
-        silent: true
-    - task:
-        app: tahoma
-        arch: win64
-        description: Installing Tahoma font
-        name: winetricks
-        silent: true
-        prefix: $GAMEDIR
-    - task:
-        arch: win64
-        description: Setting Windows 10 mode for Wine
-        key: Version
-        name: set_regedit
-        path: HKEY_CURRENT_USER\Software\Wine
-        prefix: $GAMEDIR
-        value: win10
-    - write_json:
-        data:
-          Client:
-            GameLaunchWindowBehavior: "2"
-            GameSearch:
-              BackgroundSearch: "true"
-            HardwareAcceleration: "false"
-            Install:
-              DownloadLimitNextPatchInBps: "0"
-            Sound:
-              Enabled: "false"
-            Streaming:
-              StreamingEnabled: "false"
-          w3:
-            AdditionalLaunchArguments: -windowmode fullscreen
-        description: Writing a Battle.Net config file
-        file: $GAMEDIR/drive_c/users/$USER/AppData/Roaming/Battle.net/Battle.net.config
-    - task:
-        arch: win64
-        description: "Wine Staging: Enabling DXVA2"
-        key: backend
-        name: set_regedit
-        path: HKEY_CURRENT_USER\Software\Wine\DXVA2
-        prefix: $GAMEDIR
-        value: va
-    - merge:
-        dst: $GAMEDIR/drive_c/
-        src: setup
-    - task:
-        arch: win64
-        executable: setup
-        name: wineexec
-        description: "Installing Blizzard App
-
-          ------------------------------
-
-          Login to battle.net. Install and run Warcraft III once before proceeding."
-    - task:
-        arch: win64
-        description: "Installing w3champions...
-
-          ------------------------------
-
-          Do not run w3champions at the end of setup. "
-        executable: w3champions
-        name: wineexec
-    - task:
-        arch: win64
-        description: "Installing webview2...
-          ---------------------------------
-          Hang tight..."
+        description: "Installing WebView2"
         executable: webview2
         name: wineexec
         exclude_processes: MicrosoftEdgeUpdate.exe
@@ -116,22 +46,17 @@ script:
         path: HKEY_CURRENT_USER\Software\Wine\AppDefaults\msedgewebview2.exe
         prefix: $GAMEDIR
         value: win7
-  system:
-    env:
-      DXVK_STATE_CACHE_PATH: $GAMEDIR
-      STAGING_SHARED_MEMORY: 1
-      __GL_SHADER_DISK_CACHE: 1
-      __GL_SHADER_DISK_CACHE_PATH: $GAMEDIR
-    exclude_processes: Agent.exe "Battle.net Helper.exe"
-  wine:
-    battleye: false
-    eac: false
-    fsr: false
-    overrides:
-      locationapi: d
-      nvapi: disabled
-      nvapi64: disabled
-slug: warcraft-iii-reforged-battlenet-w3champion
+    - task:
+        arch: win64
+        executable: setup
+        name: wineexec
+        description: "Installing Battle.net"
+    - task:
+        arch: win64
+        description: "Installing W3Champions..."
+        executable: w3champions
+        name: wineexec
+slug: warcraft-iii-reforged-battlenet-w3champions-webview2
 steamid: null
-version: Battle.net + w3champions
+version: Battle.net + w3champions + webview2
 year: 2020
