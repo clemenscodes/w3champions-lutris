@@ -39,7 +39,6 @@ pkgs.writeShellApplication {
         mkdir -p "$WARCRAFT_HOME/_retail_/webui"
         cp ${self}/assets/index.html "$WARCRAFT_HOME/_retail_/webui/index.html"
       fi
-
       wine "$BNET_EXE" &
       wine "$W3C_EXE"
     '';

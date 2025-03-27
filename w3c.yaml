@@ -1,17 +1,7 @@
 description: "Installs WebView2 + Battle.net + W3Champions. Note: Proton-GE-9-26 is recommended. You need to run Battle.Net, install and then run Warcraft III before W3Champions will work. Then have Battle.net running before running W3Champions."
 game_slug: w3champions
-gogslug: ""
-humblestoreid: ""
 installer_slug: w3champions
 name: "W3Champions"
-notes:
-  "**CONFIGURE AND INSTALL THE DEPENDENCIES FIRST**\r\nInstructions for Vulkan\
-  \ support: https://github.com/lutris/lutris/wiki/Installing-drivers\r\n\r\nInstructions\
-  \ for proper functionality of Battle.Net (+ common problems) https://github.com/lutris/lutris/wiki/Game:-Blizzard-App\r\
-  \n\r\nIf the game is laggy you can switch between different windowmodes from the\
-  \ command line. This script defaults to fullscreen.\r\n-windowmode fullscreen\r\n\
-  -windowmode windowed\r\n\r\nMore info on command line options can be found here:\r\
-  \nhttps://us.forums.blizzard.com/en/warcraft3/t/1-31-0-patch-notes/5721"
 runner: wine
 script:
   files:
@@ -36,6 +26,16 @@ script:
         prefix: $GAMEDIR
     - task:
         arch: win64
+        description: "Installing W3Champions..."
+        executable: w3champions
+        name: wineexec
+    - task:
+        arch: win64
+        executable: setup
+        name: wineexec
+        description: "Installing Battle.net"
+    - task:
+        arch: win64
         description: "Installing WebView2"
         executable: webview2
         name: wineexec
@@ -46,16 +46,9 @@ script:
         path: HKEY_CURRENT_USER\Software\Wine\AppDefaults\msedgewebview2.exe
         prefix: $GAMEDIR
         value: win7
-    - task:
-        arch: win64
-        executable: setup
-        name: wineexec
-        description: "Installing Battle.net"
-    - task:
-        arch: win64
-        description: "Installing W3Champions..."
-        executable: w3champions
-        name: wineexec
+  system:
+    env:
+      PROTON_VERB: run
 slug: warcraft-iii-reforged-battlenet-w3champions-webview2
 steamid: null
 version: Battle.net + w3champions + webview2

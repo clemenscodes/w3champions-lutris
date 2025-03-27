@@ -8,7 +8,7 @@
 }: {
   battlenet = import ./battlenet {inherit self inputs pkgs environment;};
   battlenet-legacy = import ./battlenet-legacy {inherit self inputs pkgs environment-legacy;};
-  lutris-install = import ./lutris-install {inherit self inputs pkgs environment;};
+  lutris-w3c = import ./lutris-w3c {inherit self inputs pkgs environment;};
   w3champions = import ./w3champions {inherit self inputs pkgs environment;};
   w3champions-legacy = import ./w3champions-legacy {inherit self inputs pkgs environment-legacy;};
   warcraft = import ./warcraft {inherit self inputs pkgs environment;};
