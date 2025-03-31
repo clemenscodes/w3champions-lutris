@@ -50,6 +50,12 @@
         pkgs.gnutls
         pkgs.zenity
         pkgs.lutris
+        pkgs.libdrm
+        pkgs.libva
+        pkgs.libva-utils
+        pkgs.mesa
+        pkgs.pkgsi686Linux.mesa
+        pkgs.krb5
         pkgs.glfw3
         pkgs.glslang
         pkgs.renderdoc
@@ -61,7 +67,6 @@
         pkgs.vulkan-validation-layers
         pkgs.vulkan-tools-lunarg
         pkgs.vulkan-extension-layer
-        # pkgs.wineWowPackages.unstableFull
       ]
       ++ (with self.packages.${system}; [
         warcraft
@@ -72,6 +77,7 @@
         battlenet-legacy
         webview2
         lutris-w3c
+        msvproc
         winetricks
         winetricks-legacy
         wine-wow64-staging-10_4
@@ -92,38 +98,10 @@
       pkgs.pkgsi686Linux.gst_all_1.gst-vaapi
     ];
     environment = ''
-      # export __EGL_VENDOR_LIBRARY_DIRS="/run/opengl-driver/share/glvnd/egl_vendor.d:/run/opengl-driver-32/share/glvnd/egl_vendor.d"
-      # export LIBVA_DRIVERS_PATH="/run/opengl-driver/lib/dri:/run/opengl-driver-32/lib/dri"
-      # export VDPAU_DRIVER_PATH="/run/opengl-driver/lib/vdpau:/run/opengl-driver-32/lib/vdpau"
-      # export VK_DRIVER_FILES="/run/opengl-driver/share/vulkan/icd.d/radeon_icd.x86_64.json:/run/opengl-driver-32/share/vulkan/icd.d/radeon_icd.i686.json"
-      # export VK_ICD_FILENAMES="/run/opengl-driver/share/vulkan/icd.d/radeon_icd.x86_64.json:/run/opengl-driver-32/share/vulkan/icd.d/radeon_icd.i686.json"
-      # export VULKAN_SDK="${pkgs.vulkan-validation-layers}/share/vulkan/explicit_layer.d"
-      # export VK_LAYER_PATH="${pkgs.vulkan-validation-layers}/share/vulkan/explicit_layer.d"
-      #
-      # export GST_PLUGIN_SYSTEM_PATH_1_0="${GST_PLUGIN_SYSTEM_PATH_1_0}"
-
       export WINEPATH="$HOME/Games"
       export WINEPREFIX="$WINEPATH/w3champions"
       export WINEARCH="win64"
-      # export WINEDEBUG="-all"
-      # export WINEESYNC="1"
-      # export WINEFSYNC="1"
-
-      # export STEAM_COMPAT_DATA_PATH="$WINEPREFIX"
-      # export STEAM_COMPAT_SHADER_PATH="$WINEPREFIX/shadercache"
-      # export STEAM_LINUX_RUNTIME_VERBOSE="1"
-      # export STEAM_LINUX_RUNTIME_LOG="1"
-
-      # export DXVK_HUD="1"
-      # export DXVK_STATE_CACHE_PATH="$WINEPREFIX"
-      # export DXVK_LOG_LEVEL="info"
-      # export DXVK_LOG_PATH="$WINEPREFIX"
-      # export DXVK_CONFIGURATION_FILE="${self}/dxvk.conf"
-      # export STAGING_SHARED_MEMORY=1
-      # export __GL_SHADER_DISK_CACHE=1
-      # export __GL_SHADER_DISK_CACHE_PATH="$WINEPREFIX"
-
-      export PROTON_VERB=run
+      export WINEDEBUG="-all"
 
       export DOWNLOADS="$WINEPREFIX/drive_c/users/$USER/Downloads"
       export PROGRAM_FILES="$WINEPREFIX/drive_c/Program Files"
@@ -152,39 +130,9 @@
       export WARCRAFT_HOME="$PROGRAM_FILES86/Warcraft III"
     '';
     environment-legacy = ''
-      export __EGL_VENDOR_LIBRARY_DIRS="/run/opengl-driver/share/glvnd/egl_vendor.d:/run/opengl-driver-32/share/glvnd/egl_vendor.d"
-      export LIBVA_DRIVERS_PATH="/run/opengl-driver/lib/dri:/run/opengl-driver-32/lib/dri"
-      export LIBVA_DRIVER_NAME="d3d12"
-      export VDPAU_DRIVER_PATH="/run/opengl-driver/lib/vdpau:/run/opengl-driver-32/lib/vdpau"
-      export VDPAU_DRIVER="d3d12"
-      export VK_DRIVER_FILES="/run/opengl-driver/share/vulkan/icd.d/radeon_icd.x86_64.json:/run/opengl-driver-32/share/vulkan/icd.d/radeon_icd.i686.json"
-      export VK_ICD_FILENAMES="/run/opengl-driver/share/vulkan/icd.d/radeon_icd.x86_64.json:/run/opengl-driver-32/share/vulkan/icd.d/radeon_icd.i686.json"
-      export VULKAN_SDK="${pkgs.vulkan-validation-layers}/share/vulkan/explicit_layer.d"
-      export VK_LAYER_PATH="${pkgs.vulkan-validation-layers}/share/vulkan/explicit_layer.d"
-
-      export GST_PLUGIN_SYSTEM_PATH_1_0="${GST_PLUGIN_SYSTEM_PATH_1_0}"
-
       export WINEPATH="$HOME/Games"
       export WINEPREFIX="$WINEPATH/bnet"
       export WINEARCH="win64"
-      export WINE_LARGE_ADDRESS_AWARE="1"
-      export WINEDEBUG="-all"
-      export WINEESYNC="1"
-      export WINEFSYNC="1"
-
-      export STEAM_COMPAT_DATA_PATH="$WINEPREFIX"
-      export STEAM_COMPAT_SHADER_PATH="$WINEPREFIX/shadercache"
-      export STEAM_LINUX_RUNTIME_VERBOSE="1"
-      export STEAM_LINUX_RUNTIME_LOG="1"
-
-      export DXVK_HUD="1"
-      export DXVK_STATE_CACHE_PATH="$WINEPREFIX"
-      export DXVK_LOG_LEVEL="info"
-      export DXVK_LOG_PATH="$WINEPREFIX"
-      export DXVK_CONFIGURATION_FILE="${self}/dxvk.conf"
-      export STAGING_SHARED_MEMORY=1
-      export __GL_SHADER_DISK_CACHE=1
-      export __GL_SHADER_DISK_CACHE_PATH="$WINEPREFIX"
 
       export DOWNLOADS="$WINEPREFIX/drive_c/users/$USER/Downloads"
       export PROGRAM_FILES="$WINEPREFIX/drive_c/Program Files"
@@ -225,6 +173,7 @@
           battlenet-legacy
           webview2
           lutris-w3c
+          msvproc
           winetricks
           winetricks-legacy
           ;
@@ -234,13 +183,13 @@
           wine-wow64-staging-10_4
           wine-wow64-staging-winetricks-10_4
           ;
-        default = self.packages.${system}.warcraft;
+        default = self.packages.${system}.lutris-w3c;
       };
     };
     devShells = {
       ${system} = {
         default = pkgs.mkShell {
-          inherit buildInputs;
+          inherit buildInputs GST_PLUGIN_SYSTEM_PATH_1_0;
           shellHook =
             environment
             + ''

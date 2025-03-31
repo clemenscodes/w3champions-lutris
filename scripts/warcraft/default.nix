@@ -10,7 +10,6 @@ pkgs.writeShellApplication {
   runtimeInputs = [
     self.packages.x86_64-linux.wine-wow64-staging-10_4
     self.packages.x86_64-linux.wine-wow64-staging-winetricks-10_4
-    # pkgs.wineWowPackages.unstableFull
     self.packages.x86_64-linux.battlenet
     self.packages.x86_64-linux.w3champions
     self.packages.x86_64-linux.webview2
@@ -26,9 +25,9 @@ pkgs.writeShellApplication {
         mkdir -p "$WINEPREFIX"
       fi
 
-      battlenet
       w3champions
       webview2
+      battlenet
 
       WARCRAFT_PATH="''${WARCRAFT_PATH:-}"
 
@@ -36,10 +35,8 @@ pkgs.writeShellApplication {
         echo "Copying $WARCRAFT_PATH to $WARCRAFT_HOME"
         cp -r "$WARCRAFT_PATH" "$WARCRAFT_HOME"
         rm -rf "$WARCRAFT_HOME/_retail_/webui" || true
-        mkdir -p "$WARCRAFT_HOME/_retail_/webui"
-        cp ${self}/assets/index.html "$WARCRAFT_HOME/_retail_/webui/index.html"
       fi
-      wine "$BNET_EXE" &
+
       wine "$W3C_EXE"
     '';
 }

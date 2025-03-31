@@ -10,7 +10,6 @@ pkgs.writeShellApplication {
   runtimeInputs = [
     self.packages.x86_64-linux.wine-wow64-staging-10_4
     self.packages.x86_64-linux.wine-wow64-staging-winetricks-10_4
-    # pkgs.wineWowPackages.unstableFull
     pkgs.winetricks
     pkgs.curl
     pkgs.samba
@@ -31,24 +30,10 @@ pkgs.writeShellApplication {
           echo "Battle.net launcher already downloaded."
         fi
 
-        winetricks -q --force arial tahoma dxvk
-
-        cp ${self}/assets/dll/syswow64/msvproc.dll "$WINEPREFIX/drive_c/windows/syswow64"
-        cp ${self}/assets/dll/system32/msvproc.dll "$WINEPREFIX/drive_c/windows/system32"
-
-        echo "Setting Windows 7 mode for wine"
-        wine "$WINEPREFIX/drive_c/windows/regedit.exe" /S "${self}/registry/wine.reg"
-
-        echo "Enabling DXVA2 for wine"
-        wine "$WINEPREFIX/drive_c/windows/regedit.exe" /S "${self}/registry/dxva2.reg"
-
-        echo "Writing a Battle.net config file"
-        mkdir -p "$BNET_CONFIG_HOME"
-        cat ${self}/assets/Battle.net.config.json > "$BNET_CONFIG"
-
         echo "Running Battle.net setup..."
         wine "$BNET_SETUP_EXE"
         echo "Successfully installed Battle.net"
+        wineserver -k
       fi
 
       if [[ ! -f "$BNET_EXE" ]]; then

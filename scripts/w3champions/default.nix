@@ -10,7 +10,6 @@ pkgs.writeShellApplication {
   runtimeInputs = [
     self.packages.x86_64-linux.wine-wow64-staging-10_4
     self.packages.x86_64-linux.wine-wow64-staging-winetricks-10_4
-    # pkgs.wineWowPackages.unstableFull
     pkgs.curl
     pkgs.samba
     pkgs.jansson
@@ -33,6 +32,7 @@ pkgs.writeShellApplication {
         echo "Running W3Champions setup..."
         echo "Do not yet launch W3Champions after the installer finishes... a final step will still be needed."
         wine "$W3C_SETUP_EXE"
+        wineserver -k
       fi
     '';
 }
