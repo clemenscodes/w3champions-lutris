@@ -27,6 +27,7 @@ pkgs.writeShellApplication {
 
         echo "Running W3Champions legacy setup..."
         wine "$W3C_LEGACY_SETUP_EXE" || exit 1
+        wineserver -k
       fi
     '';
 }

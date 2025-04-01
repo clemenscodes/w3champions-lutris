@@ -37,5 +37,6 @@ pkgs.writeShellApplication {
       echo "wine net start 'Bonjour Service'"
       echo
       wine "$W3C_LEGACY_EXE"
+      wineserver -k
     '';
 }

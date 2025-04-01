@@ -42,62 +42,60 @@
       ];
     };
     scripts = import ./scripts {inherit self inputs pkgs environment environment-legacy;};
-    buildInputs =
-      [
-        pkgs.curl
-        pkgs.samba
-        pkgs.jansson
-        pkgs.gnutls
-        pkgs.zenity
-        pkgs.lutris
-        pkgs.libdrm
-        pkgs.libva
-        pkgs.libva-utils
-        pkgs.mesa
-        pkgs.pkgsi686Linux.mesa
-        pkgs.krb5
-        pkgs.glfw3
-        pkgs.glslang
-        pkgs.renderdoc
-        pkgs.spirv-tools
-        pkgs.vulkan-volk
-        pkgs.vulkan-tools
-        pkgs.vulkan-loader
-        pkgs.vulkan-headers
-        pkgs.vulkan-validation-layers
-        pkgs.vulkan-tools-lunarg
-        pkgs.vulkan-extension-layer
-      ]
-      ++ (with self.packages.${system}; [
-        warcraft
-        warcraft-legacy
-        w3champions
-        w3champions-legacy
-        battlenet
-        battlenet-legacy
-        webview2
-        lutris-w3c
-        msvproc
-        winetricks
-        winetricks-legacy
-        wine-wow64-staging-10_4
-        wine-wow64-staging-winetricks-10_4
-      ]);
-    GST_PLUGIN_SYSTEM_PATH_1_0 = lib.makeSearchPathOutput "lib" "lib/gstreamer-1.0" [
-      pkgs.gst_all_1.gst-plugins-base
-      pkgs.pkgsi686Linux.gst_all_1.gst-plugins-base
-      pkgs.gst_all_1.gst-plugins-good
-      pkgs.pkgsi686Linux.gst_all_1.gst-plugins-good
-      pkgs.gst_all_1.gst-plugins-bad
-      pkgs.pkgsi686Linux.gst_all_1.gst-plugins-bad
-      pkgs.gst_all_1.gst-plugins-ugly
-      pkgs.pkgsi686Linux.gst_all_1.gst-plugins-ugly
-      pkgs.gst_all_1.gst-libav
-      pkgs.pkgsi686Linux.gst_all_1.gst-libav
-      pkgs.gst_all_1.gst-vaapi
-      pkgs.pkgsi686Linux.gst_all_1.gst-vaapi
+    selfPkgs = with self.packages.${system}; [
+      warcraft
+      warcraft-legacy
+      w3champions
+      w3champions-legacy
+      battlenet
+      battlenet-legacy
+      webview2
+      lutris-w3c
+      msvproc
+      msvproc-legacy
+      winetricks
+      winetricks-legacy
+      # wine-wow64-staging-10_4
+      # wine-wow64-staging-winetricks-10_4
+      # wine-ge
+      pkgs.wineWowPackages.stagingFull
+      pkgs.wineWow64Packages.stagingFull
     ];
+    libs = [
+      # pkgs.curl
+      # pkgs.samba
+      # pkgs.jansson
+      # pkgs.zenity
+      # pkgs.lutris
+      # pkgs.libdrm
+      # pkgs.libva
+      # pkgs.libva-utils
+      # pkgs.mesa
+      # pkgs.pkgsi686Linux.mesa
+      # pkgs.krb5
+      # pkgs.glfw3
+      # pkgs.glslang
+      # pkgs.renderdoc
+      # pkgs.spirv-tools
+      # pkgs.vulkan-volk
+      # pkgs.vulkan-tools
+      # pkgs.vulkan-loader
+      # pkgs.vulkan-headers
+      # pkgs.vulkan-validation-layers
+      # pkgs.vulkan-tools-lunarg
+      # pkgs.vulkan-extension-layer
+      # pkgs.libGL
+    ];
+    buildInputs = libs ++ selfPkgs;
+    LD_LIBRARY_PATH = pkgs.lib.makeLibraryPath libs;
     environment = ''
+      export LIBVA_DRIVERS_PATH="/run/opengl-driver/lib/dri:/run/opengl-driver-32/lib/dri"
+      export VDPAU_DRIVER_PATH="/run/opengl-driver/lib/vdpau:/run/opengl-driver-32/lib/vdpau"
+      export VK_DRIVER_FILES="/run/opengl-driver/share/vulkan/icd.d/radeon_icd.x86_64.json:/run/opengl-driver-32/share/vulkan/icd.d/radeon_icd.i686.json"
+      export VK_ICD_FILENAMES="/run/opengl-driver/share/vulkan/icd.d/radeon_icd.x86_64.json:/run/opengl-driver-32/share/vulkan/icd.d/radeon_icd.i686.json"
+
+      export LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:$LIBVA_DRIVERS_PATH:$VDPAU_DRIVER_PATH:$LD_LIBRARY_PATH"
+
       export WINEPATH="$HOME/Games"
       export WINEPREFIX="$WINEPATH/w3champions"
       export WINEARCH="win64"
@@ -110,7 +108,7 @@
       export APPDATA_LOCAL="$APPDATA/Local"
       export APPDATA_ROAMING="$APPDATA/Roaming"
 
-      export WEBVIEW2_URL="https://go.microsoft.com/fwlink/?linkid=2124701"
+      export WEBVIEW2_URL="https://go.microsoft.com/fwlink/?linkid=2124703"
       export WEBVIEW2_SETUP_EXE="$DOWNLOADS/MicrosoftEdgeWebview2Setup.exe"
 
       export BATTLENET_URL="https://downloader.battle.net/download/getInstaller?os=win&installer=Battle.net-Setup.exe"
@@ -130,9 +128,20 @@
       export WARCRAFT_HOME="$PROGRAM_FILES86/Warcraft III"
     '';
     environment-legacy = ''
+      export __EGL_VENDOR_LIBRARY_DIRS="/run/opengl-driver/share/glvnd/egl_vendor.d:/run/opengl-driver-32/share/glvnd/egl_vendor.d"
+      export LIBVA_DRIVERS_PATH="/run/opengl-driver/lib/dri:/run/opengl-driver-32/lib/dri"
+      export VDPAU_DRIVER_PATH="/run/opengl-driver/lib/vdpau:/run/opengl-driver-32/lib/vdpau"
+      export VK_DRIVER_FILES="/run/opengl-driver/share/vulkan/icd.d/radeon_icd.x86_64.json:/run/opengl-driver-32/share/vulkan/icd.d/radeon_icd.i686.json"
+      export VK_ICD_FILENAMES="/run/opengl-driver/share/vulkan/icd.d/radeon_icd.x86_64.json:/run/opengl-driver-32/share/vulkan/icd.d/radeon_icd.i686.json"
+      export LIBVA_DRIVER_NAME="radeonsi"
+      export VDPAU_DRIVER="radeonsi"
+
+      export LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:$LIBVA_DRIVERS_PATH:$VDPAU_DRIVER_PATH:$LD_LIBRARY_PATH"
+
       export WINEPATH="$HOME/Games"
-      export WINEPREFIX="$WINEPATH/bnet"
+      export WINEPREFIX="$WINEPATH/w3champions-legacy"
       export WINEARCH="win64"
+      export WINEDEBUG="-all"
 
       export DOWNLOADS="$WINEPREFIX/drive_c/users/$USER/Downloads"
       export PROGRAM_FILES="$WINEPREFIX/drive_c/Program Files"
@@ -141,7 +150,7 @@
       export APPDATA_LOCAL="$APPDATA/Local"
       export APPDATA_ROAMING="$APPDATA/Roaming"
 
-      export WEBVIEW2_URL="https://go.microsoft.com/fwlink/?linkid=2124701"
+      export WEBVIEW2_URL="https://go.microsoft.com/fwlink/?linkid=2124703"
       export WEBVIEW2_SETUP_EXE="$DOWNLOADS/MicrosoftEdgeWebview2Setup.exe"
 
       export BATTLENET_URL="https://downloader.battle.net/download/getInstaller?os=win&installer=Battle.net-Setup.exe"
@@ -174,6 +183,7 @@
           webview2
           lutris-w3c
           msvproc
+          msvproc-legacy
           winetricks
           winetricks-legacy
           ;
@@ -189,7 +199,7 @@
     devShells = {
       ${system} = {
         default = pkgs.mkShell {
-          inherit buildInputs GST_PLUGIN_SYSTEM_PATH_1_0;
+          inherit buildInputs;
           shellHook =
             environment
             + ''

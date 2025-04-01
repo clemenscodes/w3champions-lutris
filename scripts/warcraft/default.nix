@@ -8,14 +8,18 @@
 pkgs.writeShellApplication {
   name = "warcraft";
   runtimeInputs = [
-    self.packages.x86_64-linux.wine-wow64-staging-10_4
-    self.packages.x86_64-linux.wine-wow64-staging-winetricks-10_4
+    # self.packages.x86_64-linux.wine-wow64-staging-10_4
+    # self.packages.x86_64-linux.wine-wow64-staging-winetricks-10_4
+    pkgs.wineWowPackages.stagingFull
+    pkgs.wineWow64Packages.stagingFull
     self.packages.x86_64-linux.battlenet
     self.packages.x86_64-linux.w3champions
     self.packages.x86_64-linux.webview2
-    pkgs.samba
-    pkgs.jansson
-    pkgs.gnutls
+    # pkgs.winePackages.stagingFull
+    # pkgs.wine64Packages.stagingFull
+    # pkgs.samba
+    # pkgs.jansson
+    # pkgs.gnutls
   ];
   text =
     environment
